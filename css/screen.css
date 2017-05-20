@@ -1,0 +1,105 @@
+body {
+    background-color: #F4F8E6;
+    color: #4A3D3D;
+    margin: 0;
+    font-family: 'Dosis', sans-serif;
+    font-weight: 400;
+}
+
+div {
+    box-sizing: border-box;
+}
+
+.header {
+    background-color: #1A4D68;
+    padding: 0;
+    position: relative;
+    padding-top: 5px;
+}
+
+.header > .logo {
+    background-image: url(../images/OCA.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 50px;
+    box-sizing: border-box;
+    color: white;
+    text-align: right;
+    font-size: 40px;
+    font-weight: 500;
+    font-family: 'Oswald', sans-serif;
+    margin: 5px;
+}
+
+.header > .topnav {
+    background-color: #C4C7C9;
+    border-top: 5px solid #91A6A5;
+    border-bottom: 3px solid #91A6A5;
+}
+
+.topnav {
+    font-size: 120%;
+}
+
+.topnav ul {
+    margin: 0;
+    padding: 0;
+    padding-left: 10px;
+}
+
+.topnav li {
+    display: inline;
+    list-style-type: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.topnav li:hover {
+    background-color: #91A6A5;
+}
+
+.topnav a {
+    text-decoration: none;
+    color: #4A3D3D;
+}
+
+.topnav a.active {
+    color: black;
+}
+
+.content {
+    margin-left: 10vw;
+    margin-right: 20vw;
+    max-width: 60em;
+    margin-bottom: 100px;
+}
+
+.content p {
+    text-align: justify;
+}
+
+.content a {
+    color: #1A4D68;
+}
+
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5
+{
+    font-weight: 500;
+    color: black;
+}
+
+.footer {
+    margin-left: 10vw;
+    text-align: left;
+    margin-bottom: 50px;
+    font-size: 80%;
+    max-width: 60em;
+}
+
+.content .center {
+  text-align: center;
+}
