@@ -1,6 +1,13 @@
---  Copyright OCA Alliance, 2017.
+--  Copyright Robert Bosch GmbH, 2012.
+--  Bosch Security Systems B.V.
+--  BU Communication Systems - Breda, The Netherlands
 --
---  Description         :   Wireshark Packet dissector for AES70-3-2015 (OCP.1 protocol as part of AES70-2015, the Open Control Architecture)
+--  Project             :   OCA
+--  Module              :   Tools
+--  Creation Date       :   19 Sep 2012
+--  First Author        :   Marcel Versteeg
+--
+--  Description         :   Wireshark Packet dissector for OCP.1
 --
 --  Copy this file to 'Personal Plugins' as found in About->Folders
 --  http://www.wireshark.org/docs/wsug_html_chunked/wsluarm.html
@@ -207,8 +214,10 @@ end
 -- register dissector to be able to "Decode As..."
 local tcp_dissector_table = DissectorTable.get("tcp.port")
 local udp_dissector_table = DissectorTable.get("udp.port")
+local ssl_dissector_table = DissectorTable.get("ssl.port")
 tcp_dissector_table:add(90000, ocp1)
 udp_dissector_table:add(90000, ocp1)
+ssl_dissector_table:add(90000, ocp1)
 
 -----------------------------------------------------------------------
 -- Heuristic OCP.1 dissector (determines whether the protocol is OCP.1)
@@ -450,25 +459,132 @@ msgTypeDissector[0x4] = OcaKeepAlive
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- Global enumerations
+-- Enumeration to string definitions
 -----------------------------------------------------------------------
+
+-- array to convert block type numbers to strings
+local ocaBlockTypeToString = {
+    [ 1] = "Root Block"
+}
 
 -- array to convert component numbers to strings
 local ocaComponentToString = {
     [0] = "Bootloader"
 }
 
--- array to convert library volume type numbers to strings
-local ocaLibVolTypeToString = {
-    [0] = "None",
-    [1] = "ParamSet",
-    [2] = "Patch"
+-- array to convert reset cause code numbers to strings
+local ocaDeviceManagerResetCauseToString = {
+    [0] = "PowerOn",
+    [1] = "InternalError",
+    [2] = "Upgrade",
+    [3] = "ExternalRequest"
 }
 
--- array to convert notification delivery modes to strings
+-- array to convert device state code numbers to strings
+local ocaDeviceManagerStateToString = {
+    [0x0000] = "-",
+    [0x0001] = "Operational",
+    [0x0002] = "Disabled",
+    [0x0003] = "Operational, Disabled",
+    [0x0004] = "Error",
+    [0x0005] = "Operational, Error",
+    [0x0006] = "Disabled, Error",
+    [0x0007] = "Operational, Disabled, Error",
+    [0x0008] = "Initializing",
+    [0x0009] = "Operational, Initializing",
+    [0x000A] = "Disabled, Initializing",
+    [0x000B] = "Operational, Disabled, Initializing",
+    [0x000C] = "Error, Initializing",
+    [0x000D] = "Operational, Error, Initializing",
+    [0x000E] = "Disabled, Error, Initializing",
+    [0x000F] = "Operational, Disabled, Error, Initializing",
+    [0x0010] = "Updating",
+    [0x0011] = "Operational, Updating",
+    [0x0012] = "Disabled, Updating",
+    [0x0013] = "Operational, Disabled, Updating",
+    [0x0014] = "Error, Updating",
+    [0x0015] = "Operational, Error, Updating",
+    [0x0016] = "Disabled, Error, Updating",
+    [0x0017] = "Operational, Disabled, Error, Updating",
+    [0x0018] = "Initializing, Updating",
+    [0x0019] = "Operational, Initializing, Updating",
+    [0x001A] = "Disabled, Initializing, Updating",
+    [0x001B] = "Operational, Disabled, Initializing, Updating",
+    [0x001C] = "Error, Initializing, Updating",
+    [0x001D] = "Operational, Error, Initializing, Updating",
+    [0x001E] = "Disabled, Error, Initializing, Updating",
+    [0x001F] = "Operational, Disabled, Error, Initializing, Updating"
+}
+
+-- array to convert library volume standard type id numbers to strings
+local ocaLibVolStandardTypeIdToString = {
+    [0] = "None",
+    [1] = "ParamSet",
+    [2] = "Patch",
+    [3] = "Program"
+}
+
+-- array to convert media clock type numbers to strings
+local ocaMediaClockTypeToString = {
+    [0] = "None",
+    [1] = "Internal",
+    [2] = "Network",
+    [3] = "External"
+}
+
+-- array to convert notification delivery mode numbers to strings
 local ocaNotificationDeliveryModeToString = {
     [1] = "Reliable",
     [2] = "Fast"
+}
+
+-- array to convert object search result field map index numbers to strings
+local ocaObjectSearchResultFlagsToString = {
+    [0x0000] = "-",
+    [0x0001] = "ONo",
+    [0x0002] = "ClassIdentification",
+    [0x0003] = "ONo, ClassIdentification",
+    [0x0004] = "ContainerPath",
+    [0x0005] = "ONo, ContainerPath",
+    [0x0006] = "ClassIdentification, ContainerPath",
+    [0x0007] = "ONo, ClassIdentification, ContainerPath",
+    [0x0008] = "Role",
+    [0x0009] = "ONo, Role",
+    [0x000A] = "ClassIdentification, Role",
+    [0x000B] = "ONo, ClassIdentification, Role",
+    [0x000C] = "ContainerPath, Role",
+    [0x000D] = "ONo, ContainerPath, Role",
+    [0x000E] = "ClassIdentification, ContainerPath, Role",
+    [0x000F] = "ONo, ClassIdentification, ContainerPath, Role",
+    [0x0010] = "Label",
+    [0x0011] = "ONo, Label",
+    [0x0012] = "ClassIdentification, Label",
+    [0x0013] = "ONo, ClassIdentification, Label",
+    [0x0014] = "ContainerPath, Label",
+    [0x0015] = "ONo, ContainerPath, Label",
+    [0x0016] = "ClassIdentification, ContainerPath, Label",
+    [0x0017] = "ONo, ClassIdentification, ContainerPath, Label",
+    [0x0018] = "Role, Label",
+    [0x0019] = "ONo, Role, Label",
+    [0x001A] = "ClassIdentification, Role, Label",
+    [0x001B] = "ONo, ClassIdentification, Role, Label",
+    [0x001C] = "ContainerPath, Role, Label",
+    [0x001D] = "ONo, ContainerPath, Role, Label",
+    [0x001E] = "ClassIdentification, ContainerPath, Role, Label",
+    [0x001F] = "ONo, ClassIdentification, ContainerPath, Role, Label"
+}
+
+-- array to convert port mode numbers to strings
+local ocaPortModeToString = {
+    [1] = "Input",
+    [2] = "Output"
+}
+
+-- array to convert string comparison type numbers to strings
+local ocaStringComparisonTypeToString = {
+    [0] = "Exact",
+    [1] = "Substring",
+    [2] = "Contains"
 }
 
 -----------------------------------------------------------------------
@@ -615,6 +731,20 @@ function OcaClassIdentification(buf, protofield, subtree)
 end
 
 -----------------------------------------------------------------------
+-- OcaEnumeration (pseudo type)
+-----------------------------------------------------------------------
+
+-- dissector for OcaEnumeration data type (8 bits)
+function OcaEnumeration(buf, protofield, subtree)
+    if subtree ~= nil
+    then
+        subtree:add(protofield, buf(0, 1))
+    end
+
+    return 1
+end
+
+-----------------------------------------------------------------------
 -- OcaEvent
 -----------------------------------------------------------------------
 
@@ -742,6 +872,30 @@ function OcaLibVolIdentifier(buf, protofield, subtree)
 end
 
 -----------------------------------------------------------------------
+-- OcaLibVolType
+-----------------------------------------------------------------------
+
+-- message fields for OcaLibVolType data type
+fieldDefs['ocaLibVolTypeAuthority'] = ProtoField.bytes("ocp.1.libvoltype.auth", "Authority")
+fieldDefs['ocaLibVolTypeId'] = ProtoField.uint8("ocp.1.libvoltype.id", "ID", base.DEC, ocaLibVolStandardTypeIdToString)
+table.insert(ocp1.fields, fieldDefs['ocaLibVolTypeAuthority'])
+table.insert(ocp1.fields, fieldDefs['ocaLibVolTypeId'])
+
+-- dissector for OcaLibVolType data type
+function OcaLibVolType(buf, protofield, subtree)
+    local authorityLength = OcaOrganizationID(buf(0):tvb(), nil, nil)
+
+    if subtree ~= nil
+    then
+        local libVolType = subtree:add(protofield, buf(0, authorityLength + 1))
+        OcaOrganizationID(buf(0):tvb(), fieldDefs['ocaLibVolTypeAuthority'], libVolType);
+        managerDescriptor:add(fieldDefs['ocaLibVolTypeId'], buf(authorityLength, 1))
+    end
+
+    return (authorityLength + 1)
+end
+
+-----------------------------------------------------------------------
 -- OcaList
 -----------------------------------------------------------------------
 
@@ -761,12 +915,9 @@ function OcaList(buf, elementprotofield, elementdissector, subtree)
         list:add(fieldDefs['ocaListCount'], buf(0, 2))
     end
 
-    if list ~= nil
-    then
-        for elem = 1, count, 1
-        do
-            length = length + elementdissector(buf(length):tvb(), elementprotofield, list)
-        end
+    for elem = 1, count, 1
+    do
+        length = length + elementdissector(buf(length):tvb(), elementprotofield, list)
     end
 
     return length
@@ -778,7 +929,7 @@ end
 
 -- message fields for OcaManagerDescriptor data type
 fieldDefs['ocaManagerDescriptorObjectNumber'] = ProtoField.uint32("ocp.1.mandesc.ono", "Object Number", base.DEC)
-fieldDefs['ocaManagerDescriptorName'] = ProtoField.string("ocp.1.mandesc.name", "Name")
+fieldDefs['ocaManagerDescriptorName'] = ProtoField.string("ocp.1.mandesc.name", "Name", base.UNICODE)
 fieldDefs['ocaManagerDescriptorClassID'] = ProtoField.bytes("ocp.1.mandesc.classid", "Class ID")
 fieldDefs['ocaManagerDescriptorClassVersion'] = ProtoField.uint16("ocp.1.mandesc.classvers", "Class Version", base.DEC)
 table.insert(ocp1.fields, fieldDefs['ocaManagerDescriptorObjectNumber'])
@@ -832,6 +983,15 @@ function OcaMap(buf, keyprotofield, keydissector, valueprotofield, valuedissecto
     end
 
     return length
+end
+
+-----------------------------------------------------------------------
+-- OcaMediaCodingSchemeID
+-----------------------------------------------------------------------
+
+-- dissector for OcaMediaCodingSchemeID data type
+function OcaMediaCodingSchemeID(buf, protofield, subtree)
+    return OcaUint16(buf, protofield, subtree)
 end
 
 -----------------------------------------------------------------------
@@ -910,9 +1070,9 @@ end
 -----------------------------------------------------------------------
 
 -- message fields for OcaModelDescription data type
-fieldDefs['ocaModelDescriptionManufacturer'] = ProtoField.string("ocp.1.modeldesc.manf", "Manufacturer")
-fieldDefs['ocaModelDescriptionName'] = ProtoField.string("ocp.1.modeldesc.name", "Name")
-fieldDefs['ocaModelDescriptionVersion'] = ProtoField.string("ocp.1.modeldesc.version", "Version")
+fieldDefs['ocaModelDescriptionManufacturer'] = ProtoField.string("ocp.1.modeldesc.manf", "Manufacturer", base.UNICODE)
+fieldDefs['ocaModelDescriptionName'] = ProtoField.string("ocp.1.modeldesc.name", "Name", base.UNICODE)
+fieldDefs['ocaModelDescriptionVersion'] = ProtoField.string("ocp.1.modeldesc.version", "Version", base.UNICODE)
 table.insert(ocp1.fields, fieldDefs['ocaModelDescriptionManufacturer'])
 table.insert(ocp1.fields, fieldDefs['ocaModelDescriptionName'])
 table.insert(ocp1.fields, fieldDefs['ocaModelDescriptionVersion'])
@@ -948,19 +1108,40 @@ table.insert(ocp1.fields, fieldDefs['ocaModelGUIDModelCode'])
 
 -- dissector for OcaModelGUID data type
 function OcaModelGUID(buf, protofield, subtree)
-    local resetKeyLength = OcaBlobFixedLen(1, buf(0):tvb(), nil, nil)
-    local mfrCodeLength = OcaBlobFixedLen(3, buf(resetKeyLength):tvb(), nil, nil)
-    local modelCodeLength = OcaBlobFixedLen(4, buf(resetKeyLength + mfrCodeLength):tvb(), nil, nil)
+    local reservedKeyLength = OcaBlobFixedLen(1, buf(0):tvb(), nil, nil)
+    local mfrCodeLength = OcaBlobFixedLen(3, buf(reservedKeyLength):tvb(), nil, nil)
+    local modelCodeLength = OcaBlobFixedLen(4, buf(reservedKeyLength + mfrCodeLength):tvb(), nil, nil)
 
     if subtree ~= nil
     then
-        local modelGUID = subtree:add(protofield, buf(0, resetKeyLength + mfrCodeLength + modelCodeLength))
+        local modelGUID = subtree:add(protofield, buf(0, reservedKeyLength + mfrCodeLength + modelCodeLength))
         OcaBlobFixedLen(1, buf(0):tvb(), fieldDefs['ocaModelGUIDReserved'], modelGUID)
-        OcaBlobFixedLen(3, buf(resetKeyLength):tvb(), fieldDefs['ocaModelGUIDMfrCode'], modelGUID)
-        OcaBlobFixedLen(4, buf(resetKeyLength + mfrCodeLength):tvb(), fieldDefs['ocaModelGUIDModelCode'], modelGUID)
+        OcaBlobFixedLen(3, buf(reservedKeyLength):tvb(), fieldDefs['ocaModelGUIDMfrCode'], modelGUID)
+        OcaBlobFixedLen(4, buf(reservedKeyLength + mfrCodeLength):tvb(), fieldDefs['ocaModelGUIDModelCode'], modelGUID)
     end
 
-    return (resetKeyLength + mfrCodeLength + modelCodeLength)
+    return (reservedKeyLength + mfrCodeLength + modelCodeLength)
+end
+
+-----------------------------------------------------------------------
+-- OcaNamePath
+-----------------------------------------------------------------------
+
+-- message fields for OcaNamePath data type
+fieldDefs['ocaNamePathName'] = ProtoField.string("ocp.1.namepath.name", "Name", base.UNICODE)
+table.insert(ocp1.fields, fieldDefs['ocaNamePathName'])
+
+-- dissector for OcaNamePath data type
+function OcaNamePath(buf, protofield, subtree)
+    local pathLength = OcaList(buf, fieldDefs['ocaNamePathName'], OcaString, nil)
+
+    if subtree ~= nil
+    then
+        local namePath = subtree:add(protofield, buf(0, pathLength))
+        OcaList(buf, fieldDefs['ocaNamePathName'], OcaString, namePath)
+    end
+
+    return pathLength
 end
 
 -----------------------------------------------------------------------
@@ -997,12 +1178,69 @@ function OcaObjectIdentification(buf, protofield, subtree)
 end
 
 -----------------------------------------------------------------------
+-- OcaObjectSearchResult
+-----------------------------------------------------------------------
+
+-- message fields for OcaObjectSearchResult data type
+fieldDefs['ocaObjectSearchResultONo'] = ProtoField.uint32("ocp.1.objsrchres.ono", "Object Number")
+fieldDefs['ocaObjectSearchResultClassIdentification'] = ProtoField.bytes("ocp.1.objsrchres.classidf", "Class Identification")
+fieldDefs['ocaObjectSearchResultContainerPath'] = ProtoField.bytes("ocp.1.objsrchres.cntpath", "Container Path")
+fieldDefs['ocaObjectSearchResultRole'] = ProtoField.string("ocp.1.objsrchres.role", "Role", base.UNICODE)
+fieldDefs['ocaObjectSearchResultLabel'] = ProtoField.string("ocp.1.objsrchres.label", "Label", base.UNICODE)
+table.insert(ocp1.fields, fieldDefs['ocaObjectSearchResultONo'])
+table.insert(ocp1.fields, fieldDefs['ocaObjectSearchResultClassIdentification'])
+table.insert(ocp1.fields, fieldDefs['ocaObjectSearchResultContainerPath'])
+table.insert(ocp1.fields, fieldDefs['ocaObjectSearchResultRole'])
+table.insert(ocp1.fields, fieldDefs['ocaObjectSearchResultLabel'])
+
+-- dissector for OcaObjectSearchResult data type
+function OcaObjectSearchResult(buf, protofield, subtree)
+    local classIdentificationLength = OcaClassIdentification(buf(4):tvb(), nil, nil)
+    local containerPathLength = OcaONoPath(buf(4 + classIdentificationLength):tvb(), nil, nil)
+    local roleLength = OcaString(buf(4 + classIdentificationLength + containerPathLength):tvb(), nil, nil)
+    local labelLength = OcaString(buf(4 + classIdentificationLength + containerPathLength + roleLength):tvb(), nil, nil)
+
+    if subtree ~= nil
+    then
+        local objectSearchResult = subtree:add(protofield, buf(0, 4 + classIdentificationLength + containerPathLength + roleLength + labelLength))
+        OcaONo(buf(0):tvb(), fieldDefs['ocaObjectSearchResultONo'], objectSearchResult)
+        OcaClassIdentification(buf(4):tvb(), fieldDefs['ocaObjectSearchResultClassIdentification'], objectSearchResult)
+        OcaONoPath(buf(4 + classIdentificationLength):tvb(), fieldDefs['ocaObjectSearchResultContainerPath'], objectSearchResult)
+        OcaString(buf(4 + classIdentificationLength + containerPathLength):tvb(), fieldDefs['ocaObjectSearchResultRole'], objectSearchResult)
+        OcaString(buf(4 + classIdentificationLength + containerPathLength + roleLength):tvb(), fieldDefs['ocaObjectSearchResultLabel'], objectSearchResult)
+    end
+
+    return (4 + classIdentificationLength + containerPathLength + roleLength + labelLength)
+end
+
+-----------------------------------------------------------------------
 -- OcaONo
 -----------------------------------------------------------------------
 
 -- dissector for OcaONo data type
 function OcaONo(buf, protofield, subtree)
-    OcaUint32(buf, protofield, subtree)
+    return OcaUint32(buf, protofield, subtree)
+end
+
+-----------------------------------------------------------------------
+-- OcaONoPath
+-----------------------------------------------------------------------
+
+-- message fields for OcaONoPath data type
+fieldDefs['ocaONoPathONo'] = ProtoField.uint32("ocp.1.onopath.ono", "Object Number")
+table.insert(ocp1.fields, fieldDefs['ocaONoPathONo'])
+
+-- dissector for OcaONoPath data type
+function OcaONoPath(buf, protofield, subtree)
+    local pathLength = OcaList(buf, fieldDefs['ocaONoPathONo'], OcaONo, nil)
+
+    if subtree ~= nil
+    then
+        local oNoPath = subtree:add(protofield, buf(0, pathLength))
+        OcaList(buf, fieldDefs['ocaONoPathONo'], OcaONo, oNoPath)
+    end
+
+    return pathLength
 end
 
 -----------------------------------------------------------------------
@@ -1021,7 +1259,7 @@ end
 -- message fields for OcaPort data type
 fieldDefs['ocaPortOwner'] = ProtoField.uint32("ocp.1.port.owner", "Owner", base.DEC)
 fieldDefs['ocaPortID'] = ProtoField.bytes("ocp.1.port.id", "ID")
-fieldDefs['ocaPortName'] = ProtoField.string("ocp.1.port.name", "Name")
+fieldDefs['ocaPortName'] = ProtoField.string("ocp.1.port.name", "Name", base.UNICODE)
 table.insert(ocp1.fields, fieldDefs['ocaPortOwner'])
 table.insert(ocp1.fields, fieldDefs['ocaPortID'])
 table.insert(ocp1.fields, fieldDefs['ocaPortName'])
@@ -1045,12 +1283,6 @@ end
 -----------------------------------------------------------------------
 -- OcaPortID
 -----------------------------------------------------------------------
-
--- array to convert port modes to strings
-local ocaPortModeToString = {
-    [1] = "Input",
-    [2] = "Output"
-}
 
 -- message fields for OcaPortID data type
 fieldDefs['ocaPortIDMode'] = ProtoField.uint8("ocp.1.portid.mode", "Mode", base.DEC, ocaPortModeToString)
@@ -1142,7 +1374,8 @@ function OcaString(buf, protofield, subtree)
 
     if subtree ~= nil
     then
-        local stringTree = subtree:add(protofield, buf(2, byteLength - 2))
+--        local stringTree = subtree:add(protofield, buf(2, byteLength - 2))
+        local stringTree = subtree:add_packet_field(protofield, buf(2, byteLength - 2), ENC_UTF_8)
         stringTree:add(fieldDefs['ocaStringLength'], buf(0, 2))
         stringTree:add(fieldDefs['ocaStringData'], buf(2, byteLength - 2))
     end
@@ -1151,23 +1384,23 @@ function OcaString(buf, protofield, subtree)
 end
 
 -----------------------------------------------------------------------
--- OcaTimeOfDay
+-- OcaTimeNTP
 -----------------------------------------------------------------------
 
--- message fields for OcaTimeOfDay data type
-fieldDefs['ocaTimeOfDaySeconds'] = ProtoField.uint32("ocp.1.time.seconds", "Seconds Since 1/1/1900", base.DEC)
-fieldDefs['ocaTimeOfDayFraction'] = ProtoField.uint32("ocp.1.time.fraction", "Fraction")
-table.insert(ocp1.fields, fieldDefs['ocaTimeOfDaySeconds'])
-table.insert(ocp1.fields, fieldDefs['ocaTimeOfDayFraction'])
+-- message fields for OcaTimeNTP data type
+fieldDefs['ocaTimeNTPSeconds'] = ProtoField.uint32("ocp.1.ntp.seconds", "Seconds Since 1/1/1900", base.DEC)
+fieldDefs['ocaTimeNTPFraction'] = ProtoField.uint32("ocp.1.ntp.fraction", "Fraction")
+table.insert(ocp1.fields, fieldDefs['ocaTimeNTPSeconds'])
+table.insert(ocp1.fields, fieldDefs['ocaTimeNTPFraction'])
 
--- constants for date/time conversion of OcaTimeOfDay
+-- constants for date/time conversion of OcaTimeNTP
 local SECS_PER_MINUTE = 60
 local SECS_PER_HOUR = 60 * SECS_PER_MINUTE
 local SECS_PER_DAY = 24 * SECS_PER_HOUR
 local EPOCH_YEAR = 1900
 local DAYS_PER_NON_LEAP_YEAR = 365
 local DAYS_PER_LEAP_YEAR = 366
-local MAX_UINT32 = (2^32) - 1
+local FRACTION_DIVISOR = 2^32
 
 -- helper function to determine the number of leap days through the end of the given year
 local function GetLeapsThroughEndOf(year)
@@ -1220,8 +1453,8 @@ local function PadZero(s, count)
     return (string.rep("0", count - string.len(s)) .. s)
 end
 
--- dissector for OcaTimeOfDay data type
-function OcaTimeOfDay(buf, protofield, subtree)
+-- dissector for OcaTimeNTP data type
+function OcaTimeNTP(buf, protofield, subtree)
     if subtree ~= nil
     then
         -- Calculate the date parts (freely taken from the source code of localtime.c)
@@ -1249,20 +1482,45 @@ function OcaTimeOfDay(buf, protofield, subtree)
             month = month + 1
         end
         local monthDay = days + 1
-        local fractionMilliseconds = math.floor((buf(4, 4):uint() / MAX_UINT32) * 1000)
+        local fractionMilliseconds = math.floor(((buf(4, 4):uint() / FRACTION_DIVISOR) * 1000) + 0.5)
 
         -- Create the formatted date
         local timeString = PadZero(year, 4) .. '-' .. PadZero(month, 2) .. '-' .. PadZero(monthDay, 2) .. 'T' .. PadZero(hours, 2) .. ':' .. PadZero(minutes, 2) .. ':' .. PadZero(seconds, 2) .. '.' .. PadZero(fractionMilliseconds, 3) .. 'Z'
 
         -- Add the tree
         local timeOfDayTree = subtree:add(protofield, buf(0, 8))
-        timeOfDayTree:add(fieldDefs['ocaTimeOfDaySeconds'], buf(0, 4))
-        timeOfDayTree:add(fieldDefs['ocaTimeOfDayFraction'], buf(4, 4))
+        timeOfDayTree:add(fieldDefs['ocaTimeNTPSeconds'], buf(0, 4))
+        timeOfDayTree:add(fieldDefs['ocaTimeNTPFraction'], buf(4, 4))
         timeOfDayTree:add(protofield, buf(0, 8)):set_text('Time stamp: ' .. timeString)
 
     end
 
     return 8
+end
+
+-----------------------------------------------------------------------
+-- OcaTimePTP
+-----------------------------------------------------------------------
+
+-- message fields for OcaTimePTP data type
+fieldDefs['ocaTimePTPNegative'] = ProtoField.uint8("ocp.1.ptp.neg", "Negative", base.DEC, boolToYesNoString)
+fieldDefs['ocaTimePTPSeconds'] = ProtoField.uint64("ocp.1.ptp.sec", "Seconds", base.DEC)
+fieldDefs['ocaTimePTPNanoSeconds'] = ProtoField.uint32("ocp.1.ptp.nanosec", "Nano Seconds", base.DEC)
+table.insert(ocp1.fields, fieldDefs['ocaTimePTPNegative'])
+table.insert(ocp1.fields, fieldDefs['ocaTimePTPSeconds'])
+table.insert(ocp1.fields, fieldDefs['ocaTimePTPNanoSeconds'])
+
+-- dissector for OcaTimePTP data type
+function OcaTimePTP(buf, protofield, subtree)
+    if subtree ~= nil
+    then
+        local timePTP = subtree:add(protofield, buf(0, 1 + 8 + 4))
+        timePTP:add(fieldDefs['ocaTimePTPNegative'], buf(0, 1))
+        OcaUint64(buf(1, 8):tvb(), fieldDefs['ocaTimePTPSeconds'], timePTP);
+        OcaUint32(buf(9, 4):tvb(), fieldDefs['ocaTimePTPNanoSeconds'], timePTP);
+    end
+
+    return (1 + 8 + 4)
 end
 
 -----------------------------------------------------------------------
@@ -1291,6 +1549,20 @@ function OcaUint32(buf, protofield, subtree)
     end
 
     return 4
+end
+
+-----------------------------------------------------------------------
+-- OcaUint64
+-----------------------------------------------------------------------
+
+-- dissector for OcaUint64 data type
+function OcaUint64(buf, protofield, subtree)
+    if subtree ~= nil
+    then
+        subtree:add(protofield, buf(0, 8))
+    end
+
+    return 8
 end
 
 -----------------------------------------------------------------------
@@ -1333,7 +1605,7 @@ end
 -- message fields for OcaRoot methods
 fieldDefs['ocaRootClassIdentification'] = ProtoField.bytes("ocp.1.root.classidf", "Class Identification");
 fieldDefs['ocaRootLockable'] = ProtoField.uint8("ocp.1.root.lockable", "Lockable", base.DEC, boolToYesNoString)
-fieldDefs['ocaRootRole'] = ProtoField.string("ocp.1.devman.sernumber", "Role")
+fieldDefs['ocaRootRole'] = ProtoField.string("ocp.1.devman.sernumber", "Role", base.UNICODE)
 table.insert(ocp1.fields, fieldDefs['ocaRootClassIdentification'])
 table.insert(ocp1.fields, fieldDefs['ocaRootLockable'])
 table.insert(ocp1.fields, fieldDefs['ocaRootRole'])
@@ -1364,6 +1636,11 @@ end
 function OcaRootGetRole(parameterCount, parameters, subtree)
     local classtree = subtree:add("OcaRoot.GetRole")
     OcaString(parameters, fieldDefs['ocaRootRole'], classtree)
+end
+
+-- dissector for OcaRoot LockReadonly response
+function OcaRootLockReadonly(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaRoot.LockReadonly")
 end
 
 -- dissector for OcaRoot object
@@ -1400,6 +1677,11 @@ function OcaRoot(defLevel, methodIndex, parameterCount, parameters, subtree)
             local classtree = subtree:add("OcaRoot.GetRole")
             -- no parameters to be decoded
             responseDissector = OcaRootGetRole
+        elseif methodIndex == 6
+        then
+            local classtree = subtree:add("OcaRoot.LockReadonly")
+            -- no parameters to be decoded
+            responseDissector = OcaRootLockReadonly
         else
             subtree:add("Unknown method")
         end
@@ -1436,65 +1718,22 @@ end
 -- OcaDeviceManager
 -----------------------------------------------------------------------
 
--- array to convert device state code numbers to strings
-local ocaDeviceManagerStateToString = {
-    [0x0000] = "-",
-    [0x0001] = "Operational",
-    [0x0002] = "Disabled",
-    [0x0003] = "Operational, Disabled",
-    [0x0004] = "Error",
-    [0x0005] = "Operational, Error",
-    [0x0006] = "Disabled, Error",
-    [0x0007] = "Operational, Disabled, Error",
-    [0x0008] = "Initializing",
-    [0x0009] = "Operational, Initializing",
-    [0x000A] = "Disabled, Initializing",
-    [0x000B] = "Operational, Disabled, Initializing",
-    [0x000C] = "Error, Initializing",
-    [0x000D] = "Operational, Error, Initializing",
-    [0x000E] = "Disabled, Error, Initializing",
-    [0x000F] = "Operational, Disabled, Error, Initializing",
-    [0x0010] = "Updating",
-    [0x0011] = "Operational, Updating",
-    [0x0012] = "Disabled, Updating",
-    [0x0013] = "Operational, Disabled, Updating",
-    [0x0014] = "Error, Updating",
-    [0x0015] = "Operational, Error, Updating",
-    [0x0016] = "Disabled, Error, Updating",
-    [0x0017] = "Operational, Disabled, Error, Updating",
-    [0x0018] = "Initializing, Updating",
-    [0x0019] = "Operational, Initializing, Updating",
-    [0x001A] = "Disabled, Initializing, Updating",
-    [0x001B] = "Operational, Disabled, Initializing, Updating",
-    [0x001C] = "Error, Initializing, Updating",
-    [0x001D] = "Operational, Error, Initializing, Updating",
-    [0x001E] = "Disabled, Error, Initializing, Updating",
-    [0x001F] = "Operational, Disabled, Error, Initializing, Updating"
-}
-
--- array to convert reset cause code numbers to strings
-local ocaDeviceManagerResetCauseToString = {
-    [0] = "PowerOn",
-    [1] = "InternalError",
-    [2] = "Upgrade",
-    [3] = "ExternalRequest"
-}
-
 -- message fields for OcaDeviceManager methods
 fieldDefs['ocaDeviceManagerOcaVersion'] = ProtoField.uint16("ocp.1.devman.ocaversion", "OCA Version", base.DEC)
 fieldDefs['ocaDeviceManagerModelGUID'] = ProtoField.bytes("ocp.1.devman.modelguid", "Model GUID")
-fieldDefs['ocaDeviceManagerSerialNumber'] = ProtoField.string("ocp.1.devman.sernumber", "Serial Number")
-fieldDefs['ocaDeviceManagerDeviceName'] = ProtoField.string("ocp.1.devman.devname", "Device Name")
+fieldDefs['ocaDeviceManagerSerialNumber'] = ProtoField.string("ocp.1.devman.sernumber", "Serial Number", base.UNICODE)
+fieldDefs['ocaDeviceManagerDeviceName'] = ProtoField.string("ocp.1.devman.devname", "Device Name", base.UNICODE)
 fieldDefs['ocaDeviceManagerModelDescription'] = ProtoField.bytes("ocp.1.devman.modeldescr", "Model Description")
-fieldDefs['ocaDeviceManagerDeviceRole'] = ProtoField.string("ocp.1.devman.devrole", "Device Role")
-fieldDefs['ocaDeviceManagerUserInventoryCode'] = ProtoField.string("ocp.1.devman.uic", "User Inventory Code")
+fieldDefs['ocaDeviceManagerDeviceRole'] = ProtoField.string("ocp.1.devman.devrole", "Device Role", base.UNICODE)
+fieldDefs['ocaDeviceManagerUserInventoryCode'] = ProtoField.string("ocp.1.devman.uic", "User Inventory Code", base.UNICODE)
 fieldDefs['ocaDeviceManagerEnabled'] = ProtoField.uint8("ocp.1.devman.enabled", "Enabled", base.DEC, boolToYesNoString)
 fieldDefs['ocaDeviceManagerState'] = ProtoField.uint16("ocp.1.devman.state", "State", base.HEX, ocaDeviceManagerStateToString)
 fieldDefs['ocaDeviceManagerResetKey'] = ProtoField.bytes("ocp.1.devman.resetkey", "Reset Key")
 fieldDefs['ocaDeviceManagerNetworkAddress'] = ProtoField.bytes("ocp.1.devman.netwaddr", "Network Address")
 fieldDefs['ocaDeviceManagerResetCause'] = ProtoField.uint8("ocp.1.devman.resetcause", "Reset Cause", base.DEC, ocaDeviceManagerResetCauseToString)
-fieldDefs['ocaDeviceManagerMessage'] = ProtoField.string("ocp.1.devman.message", "Message")
+fieldDefs['ocaDeviceManagerMessage'] = ProtoField.string("ocp.1.devman.message", "Message", base.UNICODE)
 fieldDefs['ocaDeviceManagerManager'] = ProtoField.bytes("ocp.1.devman.manager", "Manager")
+fieldDefs['ocaDeviceManagerDeviceRevisionID'] = ProtoField.string("ocp.1.devman.devrevid", "Device Revision ID", base.UNICODE)
 table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerOcaVersion'])
 table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerModelGUID'])
 table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerSerialNumber'])
@@ -1509,6 +1748,7 @@ table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerNetworkAddress'])
 table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerResetCause'])
 table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerMessage'])
 table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerManager'])
+table.insert(ocp1.fields, fieldDefs['ocaDeviceManagerDeviceRevisionID'])
 
 -- dissector for OcaDeviceManager GetOcaVersion response
 function OcaDeviceManagerGetOcaVersion(parameterCount, parameters, subtree)
@@ -1617,6 +1857,12 @@ function OcaDeviceManagerGetManagers(parameterCount, parameters, subtree)
     OcaList(parameters, fieldDefs["ocaDeviceManagerManager"], OcaManagerDescriptor, classtree)
 end
 
+-- dissector for OcaDeviceManager GetDeviceRevisionID response
+function OcaDeviceManagerGetDeviceRevisionID(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceManager.GetDeviceRevisionID")
+    OcaString(parameters(0):tvb(), fieldDefs['ocaDeviceManagerDeviceRevisionID'], classtree)
+end
+
 -- dissector for OcaDeviceManager object
 function OcaDeviceManager(defLevel, methodIndex, parameterCount, parameters, subtree)
     local responseDissector = nil
@@ -1722,6 +1968,11 @@ function OcaDeviceManager(defLevel, methodIndex, parameterCount, parameters, sub
             local classtree = subtree:add("OcaDeviceManager.GetManagers")
             -- no parameters to be decoded
             responseDissector = OcaDeviceManagerGetManagers
+        elseif methodIndex == 20
+        then
+            local classtree = subtree:add("OcaDeviceManager.GetDeviceRevisionID")
+            -- no parameters to be decoded
+            responseDissector = OcaDeviceManagerGetDeviceRevisionID
         else
             subtree:add("Unknown method")
         end
@@ -1737,7 +1988,7 @@ fixedObjectDissector[1] = OcaDeviceManager
 -----------------------------------------------------------------------
 
 -- message fields for OcaSecurityManager methods
-fieldDefs['ocaSecurityManagerKeyIdentity'] = ProtoField.string("ocp.1.secman.keyid", "Key Identity")
+fieldDefs['ocaSecurityManagerKeyIdentity'] = ProtoField.string("ocp.1.secman.keyid", "Key Identity", base.UNICODE)
 fieldDefs['ocaSecurityManagerKey'] = ProtoField.bytes("ocp.1.secman.key", "Key")
 table.insert(ocp1.fields, fieldDefs['ocaSecurityManagerKeyIdentity'])
 table.insert(ocp1.fields, fieldDefs['ocaSecurityManagerKey'])
@@ -1824,7 +2075,7 @@ fieldDefs['ocaFirmwareManagerImageId'] = ProtoField.uint32("ocp.1.fwman.imid", "
 fieldDefs['ocaFirmwareManagerImageData'] = ProtoField.bytes("ocp.1.fwman.imdata", "Image Data")
 fieldDefs['ocaFirmwareManagerVerifyData'] = ProtoField.bytes("ocp.1.fwman.verdata", "Verify Data")
 fieldDefs['ocaFirmwareManagerServerAddress'] = ProtoField.bytes("ocp.1.fwman.servaddr", "Server Address")
-fieldDefs['ocaFirmwareManagerUpdateFileName'] = ProtoField.string("ocp.1.fwman.updfile", "Update File Name")
+fieldDefs['ocaFirmwareManagerUpdateFileName'] = ProtoField.string("ocp.1.fwman.updfile", "Update File Name", base.UNICODE)
 table.insert(ocp1.fields, fieldDefs['ocaFirmwareManagerComponentVersion'])
 table.insert(ocp1.fields, fieldDefs['ocaFirmwareManagerComponent'])
 table.insert(ocp1.fields, fieldDefs['ocaFirmwareManagerImageId'])
@@ -2100,8 +2351,8 @@ function OcaPowerManager(defLevel, methodIndex, parameterCount, parameters, subt
         elseif methodIndex == 5
         then
             local classtree = subtree:add("OcaPowerManager.ExchangePowerSupply")
-            OcaONo(buf(0, 4):tvb(), fieldDefs['ocaPowerManagerOldPsu'], classTree);
-            OcaONo(buf(4, 4):tvb(), fieldDefs['ocaPowerManagerNewPsu'], classTree);
+            OcaONo(parameters(0, 4):tvb(), fieldDefs['ocaPowerManagerOldPsu'], classTree);
+            OcaONo(parameters(4, 4):tvb(), fieldDefs['ocaPowerManagerNewPsu'], classTree);
             classtree:add(fieldDefs['ocaPowerManagerPowerOffOld'], parameters(8, 1))
             responseDissector = OcaPowerManagerExchangePowerSupply
         elseif methodIndex == 6
@@ -2139,6 +2390,18 @@ function OcaNetworkManagerGetStreamNetworks(parameterCount, parameters, subtree)
     OcaList(parameters, fieldDefs['ocaNetworkManagerNetwork'], OcaONo, classtree)
 end
 
+-- dissector for OcaNetworkManager GetControlNetworks response
+function OcaNetworkManagerGetControlNetworks(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaNetworkManager.GetControlNetworks")
+    OcaList(parameters, fieldDefs['ocaNetworkManagerNetwork'], OcaONo, classtree)
+end
+
+-- dissector for OcaNetworkManager GetMediaTransportNetworks response
+function OcaNetworkManagerGetMediaTransportNetworks(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaNetworkManager.GetMediaTransportNetworks")
+    OcaList(parameters, fieldDefs['ocaNetworkManagerNetwork'], OcaONo, classtree)
+end
+
 -- dissector for OcaNetworkManager object
 function OcaNetworkManager(defLevel, methodIndex, parameterCount, parameters, subtree)
     local responseDissector = nil
@@ -2158,6 +2421,16 @@ function OcaNetworkManager(defLevel, methodIndex, parameterCount, parameters, su
             local classtree = subtree:add("OcaNetworkManager.GetStreamNetworks")
             -- no parameters to be decoded
             responseDissector = OcaNetworkManagerGetStreamNetworks
+        elseif methodIndex == 3
+        then
+            local classtree = subtree:add("OcaNetworkManager.GetControlNetworks")
+            -- no parameters to be decoded
+            responseDissector = OcaNetworkManagerGetControlNetworks
+        elseif methodIndex == 4
+        then
+            local classtree = subtree:add("OcaNetworkManager.GetMediaTransportNetworks")
+            -- no parameters to be decoded
+            responseDissector = OcaNetworkManagerGetMediaTransportNetworks
         else
             subtree:add("Unknown method")
         end
@@ -2173,13 +2446,27 @@ fixedObjectDissector[6] = OcaNetworkManager
 -----------------------------------------------------------------------
 
 -- message fields for OcaMediaClockManager methods
-fieldDefs['ocaOcaMediaClockManagerClock'] = ProtoField.uint32("ocp.1.mclkman.clock", "Clock", base.DEC)
-table.insert(ocp1.fields, fieldDefs['ocaOcaMediaClockManagerClock'])
+fieldDefs['ocaMediaClockManagerClock'] = ProtoField.uint32("ocp.1.mclkman.clock", "Clock", base.DEC)
+fieldDefs['ocaMediaClockManagerMediaClockType'] = ProtoField.uint8("ocp.1.mclkman.type", "Clock type", base.DEC, ocaMediaClockTypeToString)
+table.insert(ocp1.fields, fieldDefs['ocaMediaClockManagerClock'])
+table.insert(ocp1.fields, fieldDefs['ocaMediaClockManagerMediaClockType'])
 
 -- dissector for OcaMediaClockManager GetClocks response
 function OcaMediaClockManagerGetClocks(parameterCount, parameters, subtree)
     local classtree = subtree:add("OcaMediaClockManager.GetClocks")
-    OcaList(parameters, fieldDefs['ocaOcaMediaClockManagerClock'], OcaONo, subtree)
+    OcaList(parameters, fieldDefs['ocaMediaClockManagerClock'], OcaONo, subtree)
+end
+
+-- dissector for OcaMediaClockManager GetMediaClockTypesSupported response
+function OcaMediaClockManagerGetMediaClockTypesSupported(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaMediaClockManager.GetMediaClockTypesSupported")
+    OcaList(parameters, fieldDefs['ocaMediaClockManagerMediaClockType'], OcaEnumeration, subtree)
+end
+
+-- dissector for OcaMediaClockManager GetClock3s response
+function OcaMediaClockManagerGetClock3s(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaMediaClockManager.GetClock3s")
+    OcaList(parameters, fieldDefs['ocaMediaClockManagerClock'], OcaONo, subtree)
 end
 
 -- dissector for OcaMediaClockManager object
@@ -2196,6 +2483,16 @@ function OcaMediaClockManager(defLevel, methodIndex, parameterCount, parameters,
             local classtree = subtree:add("OcaMediaClockManager.GetClocks")
             -- no parameters to be decoded
             responseDissector = OcaMediaClockManagerGetClocks
+        elseif methodIndex == 2
+        then
+            local classtree = subtree:add("OcaMediaClockManager.GetMediaClockTypesSupported")
+            -- no parameters to be decoded
+            responseDissector = OcaMediaClockManagerGetMediaClockTypesSupported
+        elseif methodIndex == 3
+        then
+            local classtree = subtree:add("OcaMediaClockManager.GetClock3s")
+            -- no parameters to be decoded
+            responseDissector = OcaMediaClockManagerGetClock3s
         else
             subtree:add("Unknown method")
         end
@@ -2211,7 +2508,7 @@ fixedObjectDissector[7] = OcaMediaClockManager
 -----------------------------------------------------------------------
 
 -- message fields for OcaLibraryManager methods
-fieldDefs['ocaLibraryManagerLibraryVolumeType'] = ProtoField.uint8("ocp.1.libman.libvoltype", "Library Volume Type", base.DEC, ocaLibVolTypeToString)
+fieldDefs['ocaLibraryManagerLibraryVolumeType'] = ProtoField.bytes("ocp.1.libman.libvoltype", "Library Volume Type")
 fieldDefs['ocaLibraryManagerLibraryId'] = ProtoField.uint32("ocp.1.libman.libid", "Library ID", base.DEC)
 fieldDefs['ocaLibraryManagerLibraryCount'] = ProtoField.uint16("ocp.1.libman.libcnt", "Library Count", base.DEC)
 fieldDefs['ocaLibraryManagerLibrary'] = ProtoField.uint32("ocp.1.libman.lib", "Library", base.DEC)
@@ -2251,9 +2548,9 @@ function OcaLibraryManagerGetCurrentPatch(parameterCount, parameters, subtree)
     OcaLibVolIdentifier(parameters(0):tvb(), fieldDefs['ocaLibraryManagerPatch'], classtree)
 end
 
--- dissector for OcaLibraryManager SetCurrentPatch response
-function OcaLibraryManagerSetCurrentPatch(parameterCount, parameters, subtree)
-    local classtree = subtree:add("OcaLibraryManager.SetCurrentPatch")
+-- dissector for OcaLibraryManager ApplyPatch response
+function OcaLibraryManagerApplyPatch(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaLibraryManager.ApplyPatch")
 end
 
 -- dissector for OcaLibraryManager object
@@ -2268,12 +2565,12 @@ function OcaLibraryManager(defLevel, methodIndex, parameterCount, parameters, su
         if methodIndex == 1
         then
             local classtree = subtree:add("OcaLibraryManager.AddLibrary")
-            classtree:add(fieldDefs['ocaLibraryManagerLibraryVolumeType'], parameters(0, 1))
+            OcaLibVolType(parameters(0):tvb(), fieldDefs['ocaLibraryManagerLibraryVolumeType'])
             responseDissector = OcaLibraryManagerAddLibrary
         elseif methodIndex == 2
         then
             local classtree = subtree:add("OcaLibraryManager.DeleteLibrary")
-            OcaONo(buf(0):tvb(), fieldDefs['ocaLibraryManagerLibraryId'], classTree);
+            OcaONo(parameters(0):tvb(), fieldDefs['ocaLibraryManagerLibraryId'], classTree);
             responseDissector = OcaLibraryManagerDeleteLibrary
         elseif methodIndex == 3
         then
@@ -2292,9 +2589,9 @@ function OcaLibraryManager(defLevel, methodIndex, parameterCount, parameters, su
             responseDissector = OcaLibraryManagerGetCurrentPatch
         elseif methodIndex == 6
         then
-            local classtree = subtree:add("OcaLibraryManager.SetCurrentPatch")
+            local classtree = subtree:add("OcaLibraryManager.ApplyPatch")
             OcaLibVolIdentifier(parameters(0):tvb(), fieldDefs['ocaLibraryManagerPatch'], classtree)
-            responseDissector = OcaLibraryManagerSetCurrentPatch
+            responseDissector = OcaLibraryManagerApplyPatch
         else
             subtree:add("Unknown method")
         end
@@ -2358,18 +2655,50 @@ fixedObjectDissector[9] = OcaAudioProcessingManager
 -----------------------------------------------------------------------
 
 -- message fields for OcaDeviceTimeManager methods
-fieldDefs['ocaDeviceTimeManagerDeviceTime'] = ProtoField.uint64("ocp.1.timman.time", "Device Time")
-table.insert(ocp1.fields, fieldDefs['ocaDeviceTimeManagerDeviceTime'])
+fieldDefs['ocaDeviceTimeManagerDeviceTimeNTP'] = ProtoField.uint64("ocp.1.timman.timentp", "Device Time (NTP)")
+fieldDefs['ocaDeviceTimeManagerTimeSource'] = ProtoField.uint32("ocp.1.timman.timsrc", "Time Source", base.DEC)
+fieldDefs['ocaDeviceTimeManagerDeviceTimePTP'] = ProtoField.bytes("ocp.1.timman.timeptp", "Device Time (PTP)")
+table.insert(ocp1.fields, fieldDefs['ocaDeviceTimeManagerDeviceTimeNTP'])
+table.insert(ocp1.fields, fieldDefs['ocaDeviceTimeManagerTimeSource'])
+table.insert(ocp1.fields, fieldDefs['ocaDeviceTimeManagerDeviceTimePTP'])
 
--- dissector for OcaDeviceTimeManager GetDeviceTime response
-function OcaDeviceTimeManagerGetDeviceTime(parameterCount, parameters, subtree)
-    local classtree = subtree:add("OcaDeviceTimeManager.GetDeviceTime")
-    OcaTimeOfDay(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerDeviceTime'], classtree)
+-- dissector for OcaDeviceTimeManager GetDeviceTimeNTP response
+function OcaDeviceTimeManagerGetDeviceTimeNTP(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.GetDeviceTimeNTP")
+    OcaTimeNTP(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerDeviceTimeNTP'], classtree)
 end
 
--- dissector for OcaDeviceTimeManager SetDeviceTime response
-function OcaDeviceTimeManagerSetDeviceTime(parameterCount, parameters, subtree)
-    local classtree = subtree:add("OcaDeviceTimeManager.SetDeviceTime")
+-- dissector for OcaDeviceTimeManager SetDeviceTimeNTP response
+function OcaDeviceTimeManagerSetDeviceTimeNTP(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.SetDeviceTimeNTP")
+end
+
+-- dissector for OcaDeviceTimeManager GetTimeSources response
+function OcaDeviceTimeManagerGetTimeSources(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.GetTimeSources")
+    OcaList(parameters, fieldDefs['ocaDeviceTimeManagerTimeSource'], OcaONo, subtree)
+end
+
+-- dissector for OcaDeviceTimeManager GetCurrentDeviceTimeSource response
+function OcaDeviceTimeManagerGetCurrentDeviceTimeSource(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.GetCurrentDeviceTimeSource")
+    OcaONo(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerTimeSource'], classtree)
+end
+
+-- dissector for OcaDeviceTimeManager SetCurrentDeviceTimeSource response
+function OcaDeviceTimeManagerSetCurrentDeviceTimeSource(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.SetCurrentDeviceTimeSource")
+end
+
+-- dissector for OcaDeviceTimeManager GetDeviceTimePTP response
+function OcaDeviceTimeManagerGetDeviceTimePTP(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.GetDeviceTimePTP")
+    OcaTimePTP(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerDeviceTimePTP'], classtree)
+end
+
+-- dissector for OcaDeviceTimeManager SetDeviceTimePTP response
+function OcaDeviceTimeManagerSetDeviceTimePTP(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaDeviceTimeManager.SetDeviceTimePTP")
 end
 
 -- dissector for OcaDeviceTimeManager object
@@ -2383,14 +2712,39 @@ function OcaDeviceTimeManager(defLevel, methodIndex, parameterCount, parameters,
     then
         if methodIndex == 1
         then
-            local classtree = subtree:add("OcaDeviceTimeManager.GetDeviceTime")
+            local classtree = subtree:add("OcaDeviceTimeManager.GetDeviceTimeNTP")
             -- no parameters to be decoded
-            responseDissector = OcaDeviceTimeManagerGetDeviceTime
+            responseDissector = OcaDeviceTimeManagerGetDeviceTimeNTP
         elseif methodIndex == 2
         then
-            local classtree = subtree:add("OcaDeviceTimeManager.SetDeviceTime")
-            OcaTimeOfDay(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerDeviceTime'], classtree)
-            responseDissector = OcaDeviceTimeManagerSetDeviceTime
+            local classtree = subtree:add("OcaDeviceTimeManager.SetDeviceTimeNTP")
+            OcaTimeNTP(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerDeviceTimeNTP'], classtree)
+            responseDissector = OcaDeviceTimeManagerSetDeviceTimeNTP
+        elseif methodIndex == 3
+        then
+            local classtree = subtree:add("OcaDeviceTimeManager.GetTimeSources")
+            -- no parameters to be decoded
+            responseDissector = OcaDeviceTimeManagerGetTimeSources
+        elseif methodIndex == 4
+        then
+            local classtree = subtree:add("OcaDeviceTimeManager.GetCurrentDeviceTimeSource")
+            -- no parameters to be decoded
+            responseDissector = OcaDeviceTimeManagerGetCurrentDeviceTimeSource
+        elseif methodIndex == 5
+        then
+            local classtree = subtree:add("OcaDeviceTimeManager.SetCurrentDeviceTimeSource")
+            OcaONo(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerTimeSource'], classtree)
+            responseDissector = OcaDeviceTimeManagerSetCurrentDeviceTimeSource
+        elseif methodIndex == 6
+        then
+            local classtree = subtree:add("OcaDeviceTimeManager.GetDeviceTimePTP")
+            -- no parameters to be decoded
+            responseDissector = OcaDeviceTimeManagerGetDeviceTimePTP
+        elseif methodIndex == 7
+        then
+            local classtree = subtree:add("OcaDeviceTimeManager.SetDeviceTimePTP")
+            OcaTimePTP(parameters(0):tvb(), fieldDefs['ocaDeviceTimeManagerDeviceTimePTP'], classtree)
+            responseDissector = OcaDeviceTimeManagerSetDeviceTimePTP
         else
             subtree:add("Unknown method")
         end
@@ -2400,6 +2754,57 @@ function OcaDeviceTimeManager(defLevel, methodIndex, parameterCount, parameters,
 end
 
 fixedObjectDissector[10] = OcaDeviceTimeManager
+
+-----------------------------------------------------------------------
+-- OcaCodingManager
+-----------------------------------------------------------------------
+
+-- message fields for OcaCodingManager methods
+fieldDefs['ocaCodingManagerSchemeID'] = ProtoField.uint16("ocp.1.codman.sid", "Scheme ID")
+fieldDefs['ocaCodingManagerScheme'] = ProtoField.string("ocp.1.codmam.scheme", "Scheme", base.UNICODE)
+table.insert(ocp1.fields, fieldDefs['ocaCodingManagerSchemeID'])
+table.insert(ocp1.fields, fieldDefs['ocaCodingManagerScheme'])
+
+-- dissector for OcaCodingManager GetAvailableEncodingSchemes response
+function OcaCodingManagerGetAvailableEncodingSchemes(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaCodingManager.GetAvailableEncodingSchemes")
+    OcaMap(parameters, fieldDefs['ocaCodingManagerSchemeID'], OcaMediaCodingSchemeID, fieldDefs['ocaCodingManagerScheme'], OcaString, classtree)
+end
+
+-- dissector for OcaCodingManager GetAvailableDecodingSchemes response
+function OcaCodingManagerGetAvailableDecodingSchemes(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaCodingManager.GetAvailableDecodingSchemes")
+    OcaMap(parameters, fieldDefs['ocaCodingManagerSchemeID'], OcaMediaCodingSchemeID, fieldDefs['ocaCodingManagerScheme'], OcaString, classtree)
+end
+
+-- dissector for OcaCodingManager object
+function OcaCodingManager(defLevel, methodIndex, parameterCount, parameters, subtree)
+    local responseDissector = nil
+
+    if defLevel < 3
+    then
+        responseDissector = OcaManager(defLevel, methodIndex, parameterCount, parameters, subtree)
+    elseif defLevel == 3
+    then
+        if methodIndex == 1
+        then
+            local classtree = subtree:add("OcaCodingManager.GetAvailableEncodingSchemes")
+            -- no parameters to be decoded
+            responseDissector = OcaCodingManagerGetAvailableEncodingSchemes
+        elseif methodIndex == 2
+        then
+            local classtree = subtree:add("OcaCodingManager.GetAvailableDecodingSchemes")
+            -- no parameters to be decoded
+            responseDissector = OcaCodingManagerGetAvailableDecodingSchemes
+        else
+            subtree:add("Unknown method")
+        end
+    end
+
+    return responseDissector
+end
+
+fixedObjectDissector[12] = OcaCodingManager
 
 
 -----------------------------------------------------------------------
@@ -2412,14 +2817,16 @@ fixedObjectDissector[10] = OcaDeviceTimeManager
 
 -- message fields for OcaWorker methods
 fieldDefs['ocaWorkerEnabled'] = ProtoField.uint8("ocp.1.worker.enabled", "Enabled", base.DEC, boolToYesNoString)
-fieldDefs['ocaWorkerPortLabel'] = ProtoField.string("ocp.1.worker.portlabel", "Port Label")
+fieldDefs['ocaWorkerPortLabel'] = ProtoField.string("ocp.1.worker.portlabel", "Port Label", base.UNICODE)
 fieldDefs['ocaWorkerPortMode'] = ProtoField.uint8("ocp.1.worker.portmode", "Port Mode", base.DEC, ocaPortModeToString)
 fieldDefs['ocaWorkerPortID'] = ProtoField.bytes("ocp.1.worker.portid", "Port ID")
 fieldDefs['ocaWorkerPort'] = ProtoField.bytes("ocp.1.worker.port", "Port")
-fieldDefs['ocaWorkerPortName'] = ProtoField.string("ocp.1.worker.portname", "Port Name")
-fieldDefs['ocaWorkerLabel'] = ProtoField.string("ocp.1.worker.label", "Label")
+fieldDefs['ocaWorkerPortName'] = ProtoField.string("ocp.1.worker.portname", "Port Name", base.UNICODE)
+fieldDefs['ocaWorkerLabel'] = ProtoField.string("ocp.1.worker.label", "Label", base.UNICODE)
 fieldDefs['ocaWorkerOwner'] = ProtoField.uint32("ocp.1.worker.owner", "Owner", base.DEC)
 fieldDefs['ocaWorkerLatency'] = ProtoField.float("ocp.1.worker.latency", "Latency")
+fieldDefs['ocaWorkerNamePathName'] = ProtoField.string("ocp.1.worker.path.name", "Name", base.UNICODE)
+fieldDefs['ocaWorkerONoPathONo'] = ProtoField.uint32("ocp.1.worker.path.ono", "Object number", base.DEC)
 table.insert(ocp1.fields, fieldDefs['ocaWorkerEnabled'])
 table.insert(ocp1.fields, fieldDefs['ocaWorkerPortLabel'])
 table.insert(ocp1.fields, fieldDefs['ocaWorkerPortMode'])
@@ -2429,6 +2836,8 @@ table.insert(ocp1.fields, fieldDefs['ocaWorkerPortName'])
 table.insert(ocp1.fields, fieldDefs['ocaWorkerLabel'])
 table.insert(ocp1.fields, fieldDefs['ocaWorkerOwner'])
 table.insert(ocp1.fields, fieldDefs['ocaWorkerLatency'])
+table.insert(ocp1.fields, fieldDefs['ocaWorkerNamePathName'])
+table.insert(ocp1.fields, fieldDefs['ocaWorkerONoPathONo'])
 
 -- dissector for OcaWorker GetEnabled response
 function OcaWorkerGetEnabled(parameterCount, parameters, subtree)
@@ -2495,6 +2904,15 @@ end
 -- dissector for OcaWorker SetLatency response
 function OcaWorkerSetLatency(parameterCount, parameters, subtree)
     local classtree = subtree:add("OcaWorker.SetLatency")
+end
+
+-- dissector for OcaWorker GetPath response
+function OcaWorkerGetPath(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaWorker.GetPath")
+    local nametree = classtree:add("Name path")
+    OcaList(parameters, fieldDefs['ocaWorkerNamePathName'], OcaString, nametree)
+    local onotree = classtree:add("Object number path")
+    OcaList(parameters, fieldDefs['ocaWorkerONoPathONo'], OcaONo, onotree)
 end
 
 -- dissector for OcaWorker object
@@ -2568,6 +2986,11 @@ function OcaWorker(defLevel, methodIndex, parameterCount, parameters, subtree)
             local classtree = subtree:add("OcaWorker.SetLatency")
             classtree:add(fieldDefs['ocaWorkerLatency'], parameters(0, 4)):append_text(" seconds")
             responseDissector = OcaWorkerSetLatency
+        elseif methodIndex == 13
+        then
+            local classtree = subtree:add("OcaWorker.GetPath")
+            -- no parameters to be decoded
+            responseDissector = OcaWorkerGetPath
         else
             subtree:add("Unknown method")
         end
@@ -2579,11 +3002,6 @@ end
 -----------------------------------------------------------------------
 -- OcaBlock
 -----------------------------------------------------------------------
-
--- array to convert block types to strings
-local ocaBlockTypeToString = {
-    [ 1] = "Root Block"
-}
 
 -- message fields for OcaBlock methods
 fieldDefs['ocaBlockType'] = ProtoField.uint32("ocp.1.block.type", "Type", base.DEC, ocaBlockTypeToString)
@@ -2597,10 +3015,16 @@ fieldDefs['ocaBlockSignalPath'] = ProtoField.bytes("ocp.1.block.sigpath", "Signa
 fieldDefs['ocaBlockIndex'] = ProtoField.uint16("ocp.1.block.idx", "Index")
 fieldDefs['ocaBlockParamSet'] = ProtoField.bytes("ocp.1.block.paramset", "Parameter Set")
 fieldDefs['ocaBlockParamSetData'] = ProtoField.bytes("ocp.1.block.parsetdat", "Param Set Data")
-fieldDefs['ocaBlockVolumeName'] = ProtoField.string("ocp.1.block.volname", "Volume Name")
+fieldDefs['ocaBlockVolumeName'] = ProtoField.string("ocp.1.block.volname", "Volume Name", base.UNICODE)
 fieldDefs['ocaBlockVolumeVersion'] = ProtoField.uint32("ocp.1.block.volvers", "Volume Version", base.DEC)
 fieldDefs['ocaBlockGlobalType'] = ProtoField.bytes("ocp.1.block.globtype", "Global Type")
 fieldDefs['ocaBlockProtoONo'] = ProtoField.uint32("ocp.1.block.protoono", "Prototype Object Number", base.DEC)
+fieldDefs['ocaBlockSearchName'] = ProtoField.string("ocp.1.block.srchname", "Search Name", base.UNICODE)
+fieldDefs['ocaBlockSearchPath'] = ProtoField.string("ocp.1.block.srchpath", "Search Path", base.UNICODE)
+fieldDefs['ocaBlockStringComparisonType'] = ProtoField.uint8("ocp.1.block.strcomp", "String Comparison Type", base.DEC, ocaStringComparisonTypeToString)
+fieldDefs['ocaBlockSearchClassID'] = ProtoField.bytes("ocp.1.block.srchclid", "Search Class ID")
+fieldDefs['ocaBlockResultFlags'] = ProtoField.uint16("ocp.1.block.resflags", "Result Flags", base.HEX, ocaObjectSearchResultFlagsToString)
+fieldDefs['ocaBlockSearchResult'] = ProtoField.bytes("ocp.1.block.srchres", "Result")
 table.insert(ocp1.fields, fieldDefs['ocaBlockType'])
 table.insert(ocp1.fields, fieldDefs['ocaBlockClassID'])
 table.insert(ocp1.fields, fieldDefs['ocaBlockContructionParameters'])
@@ -2616,6 +3040,12 @@ table.insert(ocp1.fields, fieldDefs['ocaBlockVolumeName'])
 table.insert(ocp1.fields, fieldDefs['ocaBlockVolumeVersion'])
 table.insert(ocp1.fields, fieldDefs['ocaBlockGlobalType'])
 table.insert(ocp1.fields, fieldDefs['ocaBlockProtoONo'])
+table.insert(ocp1.fields, fieldDefs['ocaBlockSearchName'])
+table.insert(ocp1.fields, fieldDefs['ocaBlockSearchPath'])
+table.insert(ocp1.fields, fieldDefs['ocaBlockStringComparisonType'])
+table.insert(ocp1.fields, fieldDefs['ocaBlockSearchClassID'])
+table.insert(ocp1.fields, fieldDefs['ocaBlockResultFlags'])
+table.insert(ocp1.fields, fieldDefs['ocaBlockSearchResult'])
 
 -- dissector for OcaBlock GetType response
 function OcaBlockGetType(parameterCount, parameters, subtree)
@@ -2707,6 +3137,30 @@ end
 function OcaBlockGetONoMap(parameterCount, parameters, subtree)
     local classtree = subtree:add("OcaBlock.GetONoMap")
     OcaMap(parameters, fieldDefs['ocaBlockProtoONo'], OcaProtoONo, fieldDefs['ocaBlockMemberONo'], OcaONo, classtree)
+end
+
+-- dissector for OcaBlock FindObjectsByRole response
+function OcaBlockFindObjectsByRole(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaBlock.FindObjectsByRole")
+    OcaList(parameters, fieldDefs['ocaBlockSearchResult'], OcaObjectSearchResult, classtree)
+end
+
+-- dissector for OcaBlock FindObjectsByRoleRecursive response
+function OcaBlockFindObjectsByRoleRecursive(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaBlock.FindObjectsByRoleRecursive")
+    OcaList(parameters, fieldDefs['ocaBlockSearchResult'], OcaObjectSearchResult, classtree)
+end
+
+-- dissector for OcaBlock FindObjectsByLabelRecursive response
+function OcaBlockFindObjectsByLabelRecursive(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaBlock.FindObjectsByLabelRecursive")
+    OcaList(parameters, fieldDefs['ocaBlockSearchResult'], OcaObjectSearchResult, classtree)
+end
+
+-- dissector for OcaBlock FindObjectsByPath response
+function OcaBlockFindObjectsByPath(parameterCount, parameters, subtree)
+    local classtree = subtree:add("OcaBlock.FindObjectsByPath")
+    OcaList(parameters, fieldDefs['ocaBlockSearchResult'], OcaObjectSearchResult, classtree)
 end
 
 -- dissector for OcaBlock object
@@ -2801,6 +3255,36 @@ function OcaBlock(defLevel, methodIndex, parameterCount, parameters, subtree)
             local classtree = subtree:add("OcaBlock.GetONoMap")
             -- no parameters to be decoded
             responseDissector = OcaBlockGetONoMap
+        elseif methodIndex == 17
+        then
+            local classtree = subtree:add("OcaBlock.FindObjectsByRole")
+            local searchNameLength = OcaString(parameters(0):tvb(), fieldDefs['ocaBlockSearchName'], classtree)
+            classtree:add(fieldDefs['ocaBlockStringComparisonType'], parameters(searchNameLength, 1))
+            local searchClassIDLength = OcaClassID(parameters(searchNameLength + 1):tvb(), fieldDefs['ocaBlockSearchClassID'], classtree)
+            classtree:add(fieldDefs['ocaBlockResultFlags'], parameters(searchNameLength + 1 + searchClassIDLength, 2))
+            responseDissector = OcaBlockFindObjectsByRole
+        elseif methodIndex == 18
+        then
+            local classtree = subtree:add("OcaBlock.FindObjectsByRoleRecursive")
+            local searchNameLength = OcaString(parameters(0):tvb(), fieldDefs['ocaBlockSearchName'], classtree)
+            classtree:add(fieldDefs['ocaBlockStringComparisonType'], parameters(searchNameLength, 1))
+            local searchClassIDLength = OcaClassID(parameters(searchNameLength + 1):tvb(), fieldDefs['ocaBlockSearchClassID'], classtree)
+            classtree:add(fieldDefs['ocaBlockResultFlags'], parameters(searchNameLength + 1 + searchClassIDLength, 2))
+            responseDissector = OcaBlockFindObjectsByRoleRecursive
+        elseif methodIndex == 19
+        then
+            local classtree = subtree:add("OcaBlock.FindObjectsByLabelRecursive")
+            local searchNameLength = OcaString(parameters(0):tvb(), fieldDefs['ocaBlockSearchName'], classtree)
+            classtree:add(fieldDefs['ocaBlockStringComparisonType'], parameters(searchNameLength, 1))
+            local searchClassIDLength = OcaClassID(parameters(searchNameLength + 1):tvb(), fieldDefs['ocaBlockSearchClassID'], classtree)
+            classtree:add(fieldDefs['ocaBlockResultFlags'], parameters(searchNameLength + 1 + searchClassIDLength, 2))
+            responseDissector = OcaBlockFindObjectsByLabelRecursive
+        elseif methodIndex == 20
+        then
+            local classtree = subtree:add("OcaBlock.FindObjectsByPath")
+            local searchPathLength = OcaNamePath(parameters(0):tvb(), fieldDefs['ocaBlockSearchPath'], classtree)
+            classtree:add(fieldDefs['ocaBlockResultFlags'], parameters(searchPathLength, 2))
+            responseDissector = OcaBlockFindObjectsByPath
         else
             subtree:add("Unknown method")
         end
