@@ -10,6 +10,21 @@ div {
     box-sizing: border-box;
 }
 
+.tight {
+	margin-bottom:3pt;
+	margin-top:0
+}
+
+.loose {
+	margin-bottom:6pt;
+	margin-top:0
+}
+
+.looser {
+	margin-bottom:12pt;
+	margin-top:0
+}
+
 .header {
     background-color: #1A4D68;
     padding: 0;
