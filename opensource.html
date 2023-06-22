@@ -1,0 +1,142 @@
+<html>
+	<head>
+		<link rel=stylesheet type='text/css' href='css/screen.css' media='screen'/>
+		<link href="https://fonts.googleapis.com/css?family=Oswald:300,500|Dosis:400,500" rel="stylesheet">
+		<script src='js/script.js' ></script>
+	</head>
+	<body>
+		<div class=header>
+			<div class=logo>
+			Technical Site
+			</div>
+			<div class=topnav>
+				<ul>
+					<li><a href='index.html'>Home</a></li>
+					<li><a href='downloads.html'>Downloads</a></li>
+					<li><a href='resources.html'>Developer Resources</a></li>
+					<li><a href='opensource.html'>Open-Source Software</a></li>
+					<li><a href='licensing.html'>Licensing</a></li>
+					<li><a href='links.html'>Links</a></li>
+				</ul>
+			</div>
+		</div>
+	
+		<div class=content>
+			<h1> Open-Source Software </h1>
+			<p>
+				Here is a quick guide for users of and contributors to OCA Alliance 
+				open-source software.
+			</p>
+	
+			<h2>Alliance open-source products </h2>
+			<p>
+				An Alliance open-source product is a software component or system the Alliance 
+				publishes to help companies use AES70, the Audio Engineering Society's OCA standard
+				for audio device control and monitoring over networks.
+			</p>
+			
+			<p>
+				Going forward, the Alliance will offer a growing number of open-source products to
+				assist AES70 evaluation, experimentation, education, demonstration, and commercial
+				implementation.
+			</p>
+			
+			<h3> Finding Alliance open-source products</h3>
+			<p>
+				All Alliance open-source products are listed in various entries of the
+				<a href="downloads.html" target="_blank"> Downloads </a> section of this website.
+			</p>
+	
+			<p> Physically, Alliance open-source products are in GitHub repositories that reside in
+				subfolders of the OCA Alliance's Github site, 
+				<a href="https://ocaalliance.github.io/" target="_blank"">ocaalliance.github.io</a>.
+			</p>
+	
+			<h3> Using Alliance open-source products </h3>
+			<p>
+				Alliance open-source products are licensed under the 
+				<a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank"> Apache 2.0 license </a>.
+				You may use reproduce, modify, and/or redistribute any Allliance open-source product
+				according to the terms of this license.
+			</p>
+	
+			<p>
+				If you redistribute the open-source code, 
+				the redistributed files must include a standard licensing header 
+				in each code module.  The required header text is 
+				<a href="licensing/LicenseInfo-Code.txt" target="_blank">
+					here.
+				</a>
+			</p>
+	
+			<p>
+				For complete licensing details, please go to the 
+				<a href ='licensing.html'>Licensing</a>  section of this website.
+			</p>
+	
+			<h2> Contributing to Alliance open-source projects </h2>
+			<p>
+				<b>Contributions to Alliance open-source projects are welcome</b>. 
+				To make a contribution, the contributor posts a git pull-request to the
+				product's GitHub repository. Once the repository manager approves it,
+				the pull-request will be merged into the product.
+			</p>
+			<p>	
+				To become a contributor, an individual must first sign an 
+				<a href="licensing.html#ICLA">
+					Individual Contributor License Agreement
+				</a> 
+				and submit it to the Alliance. 
+				Once the individual's submission is accepted, they can contribute to any Alliance open-source project.
+				</p>
+	
+				<p>
+					In addition, a company whose employees contribute corporate intellectual property 
+					to an Alliance open-source project should sign a
+				<a href="licensing.html#CCLA">
+						Corporate Contributor License Agreement
+					</a>
+				and submit it to the Alliance. 
+				Once a company's CCLA is accepted, its employees can contribute to any Alliance open-source project.
+				</p>
+	
+				<p>
+					Detailed procedures for signing and submitting Contributor License agreements are in the 
+					 Licensing section of this website,
+					 <a href ='licensing.html#CLA'>here</a> 
+				</p>
+
+				<h2> Repository Details </h2>
+				<h3> Folder structure </h3>
+				
+				<p>
+					All Alliance repositories have the following base folder set:
+				</p>
+	
+				<div class="in">
+					<font size=4em color=DarkBlue>
+					<pre style="text-align:left" class="tight">
+<u><b>Folder or File		Contents		</b></u>
+<b>[component 1]/</b>		Component (1) code ...
+<b>[component n]/	</b>	Component (n) code
+<b>License/</b>		copy of Apache 2.0 license
+<b>Documents/</b>		Product documentation 
+<b>README.md</b>		Readme file - see next.</pre>
+					</font>
+				</div>
+
+				<h3>README file</h3>
+				<p>
+					As listed above, every Alliance repository contains the file <b>README.md</b>.
+					This is a Markdown file with general  usage, licensing, and development notes.
+				</p>
+				
+				<p class="tight">
+					Every README file must contain the standard Alliance licensing notification.
+					The template for this text is 
+					<a href="licensing/LicenseInfo-Readme.md" target="-blank">here</a> .
+				</p>
+			</div>
+		</div>
+  </body>
+</html>

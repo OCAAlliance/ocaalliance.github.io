@@ -9,25 +9,29 @@
       <div class=logo>
         Technical Site
       </div>
-      <div class=topnav>
-        <ul>
-          <li><a href='index.html'>Home</a></li>
-          <li><a href='downloads.html'>Downloads</a></li>
-          <li><a href='resources.html'>Developer Resources</a></li>
-          <li><a href='links.html'>Links</a></li>
-        </ul>
-      </div>
-    </div>
+			<div class=topnav>
+				<ul>
+					<li><a href='index.html'>Home</a></li>
+					<li><a href='downloads.html'>Downloads</a></li>
+					<li><a href='resources.html'>Developer Resources</a></li>
+					<li><a href='opensource.html'>Open-Source Software</a></li>
+					<li><a href='opensource.html'>Open-Source Software</a></li>
+					<li><a href='licensing.html'>Licensing</a></li>
+					<li><a href='links.html'>Links</a></li>
+				</ul>
+			</div>
+		</div>
     <div class=content>
       <h1> Downloads </h1>
-			<p>
+			<p class="tight">
 				This page provides access to tools from OCA Alliance members that aid developers 
 				and supporters of AES70-based equipment and systems. Both commercial and 
 				noncommercial products are included.  Rules covering the listings are here:
-				&nbsp;&nbsp;
-				<a href='https://OCAAlliance.github.io/downloads/ListingRules.pdf'>
-					https://OCAAlliance.github.io/downloads/ListingRules.pdf
-				</a>.
+				<div class="in">
+          <a href='https://OCAAlliance.github.io/downloads/ListingRules.pdf'>
+            https://OCAAlliance.github.io/downloads/ListingRules.pdf
+          </a>.
+        </div>
 			</p>
 			
 			<h2>AES70 Compliancy Test Tool (OCTT)</h2>
@@ -52,12 +56,15 @@
 				Architecturally, OCTT is an AES70 controller.  
 				Hence, its source code may be a useful starting point for development of commercial AES70 controllers.
 			</p>
-			</p>
-				Download source code here and/or Windows installer here: &nbsp;&nbsp;
-				<a href='https://github.com/OCAAlliance/OcaToolsAndDemos/releases/tag/v2.0.1'>
-					https://github.com/OCAAlliance/OcaToolsAndDemos/releases/tag/v2.0.1
-				</a>
+			<p class="tight">
+				Download source code here and/or Windows installer here:
       </p>
+      
+      <div class="in">
+        <a href='https://github.com/OCAAlliance/OcaToolsAndDemos/releases/tag/v2.0.1'>
+          https://github.com/OCAAlliance/OcaToolsAndDemos/releases/tag/v2.0.1
+        </a>
+      </div>
 			
       <h2>OCA Microdemo</h2>
 			
@@ -67,16 +74,20 @@
         The MicroDemo meets minimum requirements for AES70 compliance, and provides a small
         set of OCA-controlled application functions as well.
         The custom software, finished schematic diagrams, and PC board layouts, for the MicroDemo are publicly available at no charge, on commercially appropriate licensing terms.
-        Please review the OCA Alliance End User License Agreement (<a href='http://ocaalliance.com/eula/'>EULA</a>) prior to downloading and using these tools.
+        Please review the OCA Alliance End User License Agreement 
+        (<a href='http://ocaalliance.com/eula/'>EULA</a>) 
+        prior to downloading and using these tools.
       </p>
+      
       <p class="tight">
-        Download source code here:&nbsp;&nbsp;
+        Download source code here:
         <a href='https://github.com/OCAAlliance/OcaToolsAndDemos'>
-					https://github.com/OCAAlliance/OcaToolsAndDemos
-				</a>
-			</p>
+          https://github.com/OCAAlliance/OcaToolsAndDemos
+        </a>
+      </p>
+
 			<p class="tight">
-        Download hardware design files here:&nbsp;&nbsp;
+        Download hardware design files here:
         <a href='downloads/OCA Micro Hardware Package 20160802.zip'>
 					OCA Micro Hardware Package 20160802.zip
 				</a>
@@ -100,8 +111,7 @@
       
       <p>
         AES70.js is a javascript library that implements AES70. It can be used for building OCA
-        device controllers for the web and NodeJS. It's an open-source component developed by OCA Alliance member
-        DeusO. AES70.js is available on github at
+        device controllers for the web and NodeJS. It's an open-source component developed by OCA Alliance member DeusO. AES70.js is available on github at
         (<a rel=noopener target=_blank href='https://github.com/DeutscheSoft/AES70.js'>https://github.com/DeutscheSoft/AES70.js</a>)
         and as an NPM package at
         (<a rel=noopener target=_blank href='https://www.npmjs.com/package/aes70'>https://www.npmjs.com/package/aes70</a>).

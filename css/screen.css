@@ -10,8 +10,17 @@ div {
     box-sizing: border-box;
 }
 
+.in			{
+  margin-left:24px 
+}
+
 .tight {
 	margin-bottom:3pt;
+	margin-top:0
+}
+
+.tighter {
+	margin-bottom:0;
 	margin-top:0
 }
 
@@ -53,7 +62,7 @@ div {
 }
 
 .topnav {
-    font-size: 120%;
+    font-size: 110%;
 }
 
 .topnav ul {
