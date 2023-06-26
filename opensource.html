@@ -3,17 +3,18 @@
 		<link rel=stylesheet type='text/css' href='css/screen.css' media='screen'/>
 		<link href="https://fonts.googleapis.com/css?family=Oswald:300,500|Dosis:400,500" rel="stylesheet">
 		<script src='js/script.js' ></script>
+		<title>OCA Technsite - Open-Source Software</title>		
 	</head>
 	<body>
 		<div class=header>
 			<div class=logo>
-			Technical Site
+			Oca Technical Site
 			</div>
 			<div class=topnav>
 				<ul>
 					<li><a href='index.html'>Home</a></li>
+					<li><a href='aes70.html'>AES70</a></li>					
 					<li><a href='downloads.html'>Downloads</a></li>
-					<li><a href='resources.html'>Developer Resources</a></li>
 					<li><a href='opensource.html'>Open-Source Software</a></li>
 					<li><a href='licensing.html'>Licensing</a></li>
 					<li><a href='links.html'>Links</a></li>
@@ -24,7 +25,7 @@
 		<div class=content>
 			<h1> Open-Source Software </h1>
 			<p>
-				Here is a quick guide for users of and contributors to OCA Alliance 
+				This page is a quick guide for users of and contributors to OCA Alliance 
 				open-source software.
 			</p>
 	
@@ -58,15 +59,6 @@
 				<a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank"> Apache 2.0 license </a>.
 				You may use reproduce, modify, and/or redistribute any Allliance open-source product
 				according to the terms of this license.
-			</p>
-	
-			<p>
-				If you redistribute the open-source code, 
-				the redistributed files must include a standard licensing header 
-				in each code module.  The required header text is 
-				<a href="licensing/LicenseInfo-Code.txt" target="_blank">
-					here.
-				</a>
 			</p>
 	
 			<p>
@@ -106,8 +98,8 @@
 					 <a href ='licensing.html#CLA'>here</a> 
 				</p>
 
-				<h2> Repository Details </h2>
-				<h3> Folder structure </h3>
+				<h2> Technical Details </h2>
+				<h3> Repository structure </h3>
 				
 				<p>
 					All Alliance repositories have the following base folder set:
@@ -126,15 +118,21 @@
 				</div>
 
 				<h3>README file</h3>
-				<p>
-					As listed above, every Alliance repository contains the file <b>README.md</b>.
-					This is a Markdown file with general  usage, licensing, and development notes.
+				<p class="tight">
+					In addition to product-specific information, 
+					every README file must contain the standard Alliance licensing notification.
+					The required text (Markdown format) is 
+					<a href="licensing/LicenseInfo-Readme.md" target="-blank">here</a>.
 				</p>
 				
-				<p class="tight">
-					Every README file must contain the standard Alliance licensing notification.
-					The template for this text is 
-					<a href="licensing/LicenseInfo-Readme.md" target="-blank">here</a> .
+				<h3> License declarations </h3>
+				<p>
+					Every source file in an Alliance open-source product must include the standard boilerplate 
+					license declaration, entered in the appropriate comment syntax for the file's format.
+					The required text (plain text format) is 
+					<a href="licensing/LicenseInfo-Code.txt" target="_blank">
+						here
+					</a>.
 				</p>
 			</div>
 		</div>

@@ -34,6 +34,14 @@ div {
 	margin-top:0
 }
 
+.tdLooseTop {
+	padding-bottom: 3pt;
+	padding-top: 3pt;
+	padding-left: 6pt;
+	padding-right: 6pt;
+	vertical-align:top;
+}
+
 .header {
     background-color: #1A4D68;
     padding: 0;
