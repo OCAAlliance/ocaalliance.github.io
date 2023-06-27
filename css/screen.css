@@ -42,6 +42,16 @@ div {
 	vertical-align:top;
 }
 
+.tdInTableText {
+	padding-bottom: 4pt;
+	padding-top: 4pt;
+	padding-left: 6pt;
+	padding-right: 6pt;
+	vertical-align:middle;
+	font-size:1.1em;
+	font-style:italic;
+}
+
 .header {
     background-color: #1A4D68;
     padding: 0;
