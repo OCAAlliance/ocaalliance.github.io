@@ -32,3 +32,7 @@ Please note that typing your name in the field at the bottom of the document is 
 - Signing the document via DocuSign. Adobe Reader implements this.
 
 Unsigned documents are not accepted.
+
+# Guidelines
+
+Full guidelines for use of and contribution to OCA Alliance open-source software products are here: [https://ocaalliance.github.io/opensource.html](https://ocaalliance.github.io/opensource.html).
