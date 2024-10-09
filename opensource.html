@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<link rel=stylesheet type='text/css' href='css/screen.css' media='screen'/>
+		<link href="https://fonts.googleapis.com/css?family=Oswald:300,500|Dosis:400,500" rel="stylesheet">
+		<script src='js/script.js' ></script>
+		<title>OCA Techsite - OSS Guidelines</title>		
+	</head>
+	<body>
+		<div class=header>
+			<div class=logo>
+			OCA Technical Site
+			</div>
+			<div class=topnav>
+				<ul>
+					<li><a href='index.html'>Home</a></li>
+					<li><a href='aes70.html'>AES70</a></li>					
+					<li><a href='downloads.html'>Downloads</a></li>
+					<li><a href='information.html'>Information</a></li>
+					<li><a href='opensource.html'>OSS Guidelines</a></li>
+				</ul>
+			</div>
+		</div>
+	
+		<div class=content>
+			<h1> Open-Source Software (OSS) Guidelines </h1>
+			<p>
+				This page is a quick guide for users of and contributors to OCA Alliance 
+				open-source software.
+			</p>
+	
+			<h2>Alliance open-source products </h2>
+			<p>
+				An Alliance open-source product is a software component or system the Alliance 
+				publishes to help companies use AES70, the Audio Engineering Society's OCA standard
+				for audio device control and monitoring over networks.
+			</p>
+			
+			<p>
+				Going forward, the Alliance will offer a growing number of open-source products to
+				assist AES70 evaluation, experimentation, education, demonstration, and commercial
+				implementation.
+			</p>
+			
+			<h3> Finding Alliance open-source products</h3>
+			<p>
+				Alliance open-source products are listed in various entries of the
+				<a href="downloads.html" target="_blank"> Downloads</a> section of this website.
+			</p>
+	
+			<p> Physically, Alliance open-source products are in GitHub repositories that reside in
+				subfolders of the OCA Alliance's Github site, 
+				<a href="https://ocaalliance.Github.io/" target="_blank">ocaalliance.Github.io</a>.
+			</p>
+	
+			<h3> Using Alliance open-source products </h3>
+			<p>
+				Alliance open-source products produced in 2024 or later are normally licensed under the 
+				<a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 license</a>.
+				For complete licensing details, please go to  
+				<a href =#Licensing>Licensing Details</a> below.
+			</p>
+	
+			<h3> Contributing to Alliance open-source projects </h3>
+			<p>
+				Contributions to Alliance open-source projects are welcome. 
+				To make a contribution, the contributor posts a Git Pull request to the
+				product's GitHub repository. Once the repository manager approves it,
+				the Pull request's content will be merged into the project.
+			</p>
+			
+			<p> 
+				To fulfill legal requirements, Pull request comments must include specific text.
+				See <a href="#Licensing">Licensing Details</a> below.
+			</p>
+			
+			<h2> Technical Details </h2>
+			
+				<h3> Open-source repository structure </h3>
+				<p>
+					All Alliance open-source repositories have the following base folder set:
+				</p>
+	
+				<div class="in">
+					<font size=4em color=DarkBlue>
+					<pre style="text-align:left" class="tight">
+<u><b>Folder or File		Contents		</b></u>
+<b>[component 1]/</b>		Component (1) code ...
+<b>[component n]/	</b>	Component (n) code
+<b>License/</b>		copy of Apache 2.0 license
+<b>Documents/</b>		Product documentation 
+<b>README.md</b>		Readme file - see next.</pre>
+					</font>
+				</div>
+
+				<h3>README file</h3>
+				<p class="tight">
+					In addition to product-specific information, 
+					every README file contains the standard Alliance licensing text.
+					The standard content (Markdown format) is 
+					<a href="licensing/LicenseInfo-Readme.md" target="-blank">here</a>.
+				</p>
+				
+				<h3> License declarations </h3>
+				<p>
+					Every source file in an Alliance open-source product must include the standard boilerplate 
+					license declaration, entered in the appropriate comment syntax for the file's format.
+					The required text (plain text format) is 
+					<a href="licensing/LicenseInfo-Code.txt" target="_blank">
+						here
+					</a>.
+				</p>
+				
+			<h2 id="Licensing"> Licensing Details </h2>
+			<p>  
+				The Alliance uses the Apache Foundation license, Version 2.0, which covers
+				a wide range of intellectual-property issues, including patent rights.
+				Apache licenses do <b>not</b> have copy-left requirements, and are widely accepted
+				for commercial use.
+			</p>			
+			<p>
+				A copy of this license, including instructions for use, is on the Apache website, here:
+			</p>
+			
+			<div class="in">
+				<a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+					http://www.apache.org/licenses/LICENSE-2.0
+				</a>
+			</div>
+			
+			<p>
+				A clean copy of the license text is here:
+			</p>
+			<div class="in">
+				<a href="licensing/Apache License v2.0.pdf" target="_blank">
+					https://ocaalliance.Github.io/licensing/Apache License v2.0.pdf
+				</a>
+      </div>
+			
+      <p>
+          This license does not require signatures. 
+          Any OCA open-source product may be used without executing an agreement.
+          However, by using such a product, the user implicitly accepts the terms of this license.
+      </p>			
+			
+			<h3>Contributing to an open-source project</h3>
+			<p>
+				Anyone may contribute to an Alliance open source project by submitting a Git Pull request
+				to the project's repository.  No prior authorization is required.  
+				However, to fulfill legal requirements, the comments field of every submitted Pull request 
+				must contain a brief text that certifies the contributed content complies
+				with the terms of the 
+				<b><a href="https://developercertificate.org/">Developer's Certificate of Origin (DCO)</a></b>,
+				a simple document written by the Linux Foundation that attests the contributor
+				has sufficient rights to make the contribution.
+			</p>
+			<p>
+				Pull requests without DCO certifications will not be accepted by the Repository Manager,
+				and should be resubmitted with certification included.
+			</p>
+			<p>
+				The required text is as follows:	
+			</p>
+			<div class="in">
+				<font face="Courier New" size=-1><b>
+					The entire content of this Pull request complies with
+					the Linux Developer Certificate of Origin, the text of which is at
+					https://developercertificate.org/. &lt;Submitter's full name and email&gt;
+				</font></b>
+			</div>
+			<p>
+				Note that the submitter's name and email must be provided.
+				This text is also given in the Readme file of every Alliance repository. 
+		</div>
+  </body>
+</html>

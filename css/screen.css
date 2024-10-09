@@ -10,8 +10,17 @@ div {
     box-sizing: border-box;
 }
 
+.in			{
+  margin-left:24px 
+}
+
 .tight {
 	margin-bottom:3pt;
+	margin-top:0
+}
+
+.tighter {
+	margin-bottom:0;
 	margin-top:0
 }
 
@@ -23,6 +32,24 @@ div {
 .looser {
 	margin-bottom:12pt;
 	margin-top:0
+}
+
+.tdLooseTop {
+	padding-bottom: 3pt;
+	padding-top: 3pt;
+	padding-left: 6pt;
+	padding-right: 6pt;
+	vertical-align:top;
+}
+
+.tdInTableText {
+	padding-bottom: 4pt;
+	padding-top: 4pt;
+	padding-left: 6pt;
+	padding-right: 6pt;
+	vertical-align:middle;
+	font-size:1.1em;
+	font-style:italic;
 }
 
 .header {
@@ -53,7 +80,7 @@ div {
 }
 
 .topnav {
-    font-size: 120%;
+    font-size: 110%;
 }
 
 .topnav ul {
