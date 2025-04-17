@@ -19,6 +19,16 @@ div {
 	margin-top:0
 }
 
+.headSep {
+	border-top: 1px outset #000000;
+	margin-bottom: 6pt;
+}
+
+.subhead {
+	margin-bottom:3pt;
+	margin-top:6pt;
+}
+
 .tighter {
 	margin-bottom:0;
 	margin-top:0
