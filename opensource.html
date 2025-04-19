@@ -1,31 +1,49 @@
-<html>
-	<head>
-		<link rel=stylesheet type='text/css' href='css/screen.css' media='screen'/>
-		<link href="https://fonts.googleapis.com/css?family=Oswald:300,500|Dosis:400,500" rel="stylesheet">
-		<script src='js/script.js' ></script>
-		<title>OCA Techsite - OSS Guidelines</title>		
-	</head>
-	<body>
-		<div class=header>
-			<div class=logo>
-			OCA Technical Site
-			</div>
-			<div class=topnav>
-				<ul>
-					<li><a href='index.html'>Home</a></li>
-					<li><a href='aes70.html'>AES70 Standard</a></li>	
-					<li><a href='repositories.html'>Repositories</a></li>					
-					<li><a href='downloads.html'>Downloads</a></li>
-					<li><a href='information.html'>Information</a></li>
-					<li><a href='opensource.html'>Open-Source Guidelines</a></li>
-				</ul>
+<!DOCTYPE html>
+<!-- format2025 -->
+<html lang="en">
+  <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>OCA Techsite: Open Source Guidelines</title>
+		
+    <link rel=stylesheet type='text/css' href='css/screen.css' media='screen'/>
+		<link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@100..900&display=swap" rel="stylesheet">
+		
+    <script src='js/script.js' ></script>
+	
+  </head>
+  <body>
+		<table>
+			<col width='15%'>
+			<col>
+			<tbody>
+				<tr>
+					<td>
+						<a href='index.html'>
+							<img src='images/OCA-Logo-300.png.webp' width='130px' height='60px' alt='OCA Alliance Logo'/>
+						</a>
+					</td>
+					<td class=topnav>
+						<ul>
+							<li><a href='aes70.html'>AES70 Standard</a></li>	
+							<li><a href='repositories.html'>Repositories</a></li>					
+							<li><a href='downloads.html'>Downloads</a></li>
+							<li><a href='information.html'>Information</a></li>
+							<li><a href='opensource.html'>Open-Source Guidelines</a></li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class='banner'>
+			<div class='title'>
+				<h1>Open-Source Software Guidelines</h1>
 			</div>
 		</div>
-	
 		<div class=content>
-			<h1> Open-Source Software (OSS) Guidelines </h1>
-			<p>
-				This page is a quick guide for users of and contributors to OCA Alliance 
+				This page is a guide for users of and contributors to OCA Alliance 
 				open-source software.
 			</p>
 	
@@ -77,20 +95,21 @@
 			<h2> Technical Details </h2>
 			
 				<h3> Open-source repository structure </h3>
-				<p>
+				<p class='tight'>
 					All Alliance open-source repositories have the following base folder set:
 				</p>
 	
 				<div class="in">
-					<font size=4em color=DarkBlue>
-					<pre style="text-align:left" class="tight">
-<u><b>Folder or File		Contents		</b></u>
-<b>[component 1]/</b>		Component (1) code ...
-<b>[component n]/	</b>	Component (n) code
-<b>License/</b>		copy of Apache 2.0 license
-<b>Documents/</b>		Product documentation 
-<b>README.md</b>		Readme file - see next.</pre>
-					</font>
+					<pre class='code'> 
+<b>Folder or File      Contents		         				</b>
+----------------------------------------------  
+[component 1]/      component (1) code					 
+...		         																	
+[component n]/      component (n) code 					
+License/            copy of Apache 2.0 license	
+Documents/          product documentation 		  
+README.md           readme file - see next
+					</pre>
 				</div>
 
 				<h3>README file</h3>
@@ -162,10 +181,11 @@
 				The required text is as follows:	
 			</p>
 			<div class="in">
-				<font face="Courier New" size=-1><b>
+				<font face="Courier New" color='#000064'><b>
 					The entire content of this Pull request complies with
 					the Linux Developer Certificate of Origin, the text of which is at
-					https://developercertificate.org/. &lt;Submitter's full name and email&gt;
+					https://developercertificate.org/. <br />
+					&lt;Submitter's full name and email&gt;
 				</font></b>
 			</div>
 			<p>

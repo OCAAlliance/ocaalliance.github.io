@@ -1,38 +1,211 @@
+/* Format2025 version, derived from Copper Leaf 2024.09.24 version */
+
 body {
-    background-color: #F4F8E6;
-    color: #4A3D3D;
-    margin: 0;
-    font-family: 'Dosis', sans-serif;
+    font-family: "Encode Sans", Sans-serif;
+    color: #404040;
+}
+.content {
+    background-color: #fff;
+    margin-left: 8vw;
+    margin-right: 8vw;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+h1 {
+    font-size: 36px;
+}
+.header {
+	position: relative;
+	margin-bottom:0;
+	margin-top:0;
+}
+
+.title > h1{
+    color: #ffffff;
+		text-align:left;
+		padding-left:18px;
+		padding-top:22px;
+		font-size:42px;
+		font-weight:300;
+		margin-top:0;
+}
+
+.banner {
+    background-image: url("../images/OCA-Banner-small.webp"); 
+    background-repeat: no-repeat;
+    background-size: cover;
+    height:108px;
+		margin-top:0;
+		margin-bottom: 18px;
+		border-top: solid 4px #50B5AD;
+}
+
+.content a {
+    /*color: #185D57;*/
+		color: #258b84;
+    text-decoration: none;
+}
+.content a:hover {
+    color: #4BABA3;
+    text-decoration: none;
+}
+.content h1 {
     font-weight: 400;
 }
+.content h2 {
+	color: #000000;
+  font-size: 30px;
+	font-weight: 400;	
+}
 
+.content h3 {
+  /*color: #1c3735;*/
+	/*color:#143a37;*/
+	color:#2A677A;
+  font-size: 22px;
+	font-weight: 500;
+}
+
+.content h4 {
+    /*color: #10A096;*/
+		color:#2A677A;
+    font-size: 16px;
+}
+.content p, .content  ul li, th, td {
+    font-size: 16px;
+    line-height: 1.4;
+}
+.content p, .content  ul li, th, td {
+    font-weight: 400;
+}
+.content a {
+	font-weight: 500;
+}
 div {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-.in			{
-  margin-left:24px 
+.fixed-header {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 1000;
+	background-color: #fff;
+	border-bottom: solid 7px #50B5AD;
+	padding: 0 13.5vw;
 }
 
-.tight {
-	margin-bottom:3pt;
-	margin-top:0
+.flex-item-center img {
+	height: 58px;
 }
 
-.headSep {
-	border-top: 1px outset #000000;
-	margin-bottom: 6pt;
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	max-width: 1400px;
+	padding:10px 0;
+	margin: auto;
+  }
+	
+ .flex-item-left, .flex-item-right {
+	flex: 1;
+	width: 33%;
+	margin:auto;
+  }
+	
+  .flex-item-left {
+	text-align: left;
+  }
+	
+  .flex-item-right {
+	text-align: right;
+	margin-right: 15px;
+  }
+	
+  @media (max-width: 800px) {
+		.flex-container {
+				flex-direction: row;
+		}
+		.flex-item-right, .flex-item-center, .flex-item-left {
+			flex: auto;
+		}
+   }
+		
+.topnav {
+  margin-bottom:0;
 }
 
-.subhead {
-	margin-bottom:3pt;
-	margin-top:6pt;
+.topnav ul {
+	margin: 0;
+	padding-inline-start: 10px;
 }
 
-.tighter {
-	margin-bottom:0;
-	margin-top:0
+.topnav li {
+   display: inline;
+   list-style-type: none;
+   padding-left: 0px;
+   padding-right: 20px;
 }
+
+.topnav a {
+	text-decoration: none;
+  color: #707070;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.topnav a:hover {
+  color: #4BABA3;
+}
+
+.content .center {
+  text-align: center;
+}
+
+th {
+	text-align: left;
+	color: 0;
+	font-weight: 350;
+}
+
+td, th{
+	min-width: 120px;
+	padding: 8px 10px;
+	max-width: 800px;
+}
+
+.rowsep {
+		margin-top:0;
+		margin-bottom:0;
+		padding-left:0;
+		padding-right:0;
+}
+
+.flex-container-copy {
+	max-width: 1400px;
+}
+
+.footer-copy {
+	background-color:#185D57;
+	padding:3px 0;
+	position:relative;
+	width: 100%;
+}
+
+.footer a {
+	text-decoration: none;
+}
+
+.flex-container-copy a, .flex-container-copy p, .footer-copy, .footer-copy a {
+	color: #fff;
+}
+
+.footer-copy {
+	text-align: center;
+}
+
+/* ------------------------------- */
 
 .loose {
 	margin-bottom:6pt;
@@ -44,114 +217,67 @@ div {
 	margin-top:0
 }
 
+.tight {
+	margin-bottom:3pt;
+	margin-top:0
+}
+
+.tighter {
+	margin-bottom:0;
+	margin-top:0;
+	line-height:1.0em;
+}
+
+.tdTightTop {
+	padding-bottom: 0;
+	padding-top: 0;
+	padding-left: 0;
+	padding-right: 6pt;
+	vertical-align:top;
+	font-size:1.0em;
+}
+
 .tdLooseTop {
 	padding-bottom: 3pt;
 	padding-top: 3pt;
-	padding-left: 6pt;
+	padding-left: 0;
 	padding-right: 6pt;
 	vertical-align:top;
+	font-size:1.0em;
 }
 
 .tdInTableText {
 	padding-bottom: 4pt;
 	padding-top: 4pt;
-	padding-left: 6pt;
-	padding-right: 6pt;
+	padding-left: 0pt;
+	padding-right: 0pt;
 	vertical-align:middle;
-	font-size:1.1em;
+	font-size:1em;
 	font-style:italic;
 }
 
-.header {
-    background-color: #1A4D68;
-    padding: 0;
-    position: relative;
-    padding-top: 5px;
+.headSep {
+	border-top: 1px outset #C0C0C0;
+	padding-top:6px;
+	margin-bottom: 12pt;
 }
 
-.header > .logo {
-    background-image: url(../images/OCA.svg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    height: 50px;
-    box-sizing: border-box;
-    color: white;
-    text-align: right;
-    font-size: 40px;
-    font-weight: 500;
-    font-family: 'Oswald', sans-serif;
-    margin: 5px;
+.subhead {
+	margin-bottom:12pt;
+	margin-top:12pt;
 }
 
-.header > .topnav {
-    background-color: #C4C7C9;
-    border-top: 5px solid #91A6A5;
-    border-bottom: 3px solid #91A6A5;
+.code {
+	margin-top:0;
+	margin-bottom: 0;
+	font-family:Courier;
+	font-weight:600;
+	font-size: 12pt;
+	color:#000064;
+	line-height: 1em;
 }
 
-.topnav {
-    font-size: 110%;
+.in {
+	margin-left:36px 
 }
 
-.topnav ul {
-    margin: 0;
-    padding: 0;
-    padding-left: 10px;
-}
-
-.topnav li {
-    display: inline;
-    list-style-type: none;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.topnav li:hover {
-    background-color: #91A6A5;
-}
-
-.topnav a {
-    text-decoration: none;
-    color: #4A3D3D;
-}
-
-.topnav a.active {
-    color: black;
-}
-
-.content {
-    margin-left: 10vw;
-    margin-right: 20vw;
-    max-width: 60em;
-    margin-bottom: 100px;
-}
-
-.content p {
-    text-align: justify;
-}
-
-.content a {
-    color: #1A4D68;
-}
-
-.content h1,
-.content h2,
-.content h3,
-.content h4,
-.content h5
-{
-    font-weight: 500;
-    color: black;
-}
-
-.footer {
-    margin-left: 10vw;
-    text-align: left;
-    margin-bottom: 50px;
-    font-size: 80%;
-    max-width: 60em;
-}
-
-.content .center {
-  text-align: center;
-}

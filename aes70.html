@@ -1,37 +1,49 @@
-<html>
+<!DOCTYPE html>
+<!-- format2025 -->
+<html lang="en">
   <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>OCA Techsite: AES70 Standard</title>
+		
     <link rel=stylesheet type='text/css' href='css/screen.css' media='screen'/>
-    <link href='https://fonts.googleapis.com/css?family=Oswald:300,500|Dosis:400,500' rel='stylesheet'>
+		<link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@100..900&display=swap" rel="stylesheet">
+		
     <script src='js/script.js' ></script>
-		<style>
-			.sep {
-				border-top: 1px outset #000000;
-				font-size: 1px;
-				margin-top: 0;
-			}
-		</style>	
-		<title>OCA Techsite - AES70</title>		
+	
   </head>
   <body>
-    <div class=header>
-      <div class=logo>
-        OCA Technical Site
-      </div>
-			<div class=topnav>
-				<ul>
-					<li><a href='index.html'>Home</a></li>
-					<li><a href='aes70.html'>AES70 Standard</a></li>	
-					<li><a href='repositories.html'>Repositories</a></li>					
-					<li><a href='downloads.html'>Downloads</a></li>
-					<li><a href='information.html'>Information</a></li>
-					<li><a href='opensource.html'>Open-Source Guidelines</a></li>
-				</ul>
-				</ul>
+		<table>
+			<col width='15%'>
+			<col>
+			<tbody>
+				<tr>
+					<td>
+						<a href='index.html'>
+							<img src='images/OCA-Logo-300.png.webp' width='130px' height='60px' alt='OCA Alliance Logo'/>
+						</a>
+					</td>
+					<td class=topnav>
+						<ul>
+							<li><a href='aes70.html'>AES70 Standard</a></li>	
+							<li><a href='repositories.html'>Repositories</a></li>					
+							<li><a href='downloads.html'>Downloads</a></li>
+							<li><a href='information.html'>Information</a></li>
+							<li><a href='opensource.html'>Open-Source Guidelines</a></li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+					
+		<div class='banner'>
+			<div class='title'>
+				<h1>The AES70 Standard</h1>
 			</div>
-    </div>
+		</div>
+		
     <div class=content>
-      <h1> AES70 </h1>
-
       <p> 	
         The public standard specification of OCA is the AES70 standard, published by the Audio
         Engineering Society, or AES. 
@@ -48,128 +60,125 @@
 				The standards in the AES70-2024 suite are as follows:
 			</p>
       
-			<table style='font-size:1em' width='100%'>
-				<col width='10%'>
-				<col width='45%'>
-				<col>
-				<tr bgcolor=#c0c0c0>
-					<td class='tdLooseTop'><b>Standard</b></td>
-					<td class='tdLooseTop'><b>Contents</b></td>
-					<td class='tdLooseTop'><b>Download Link</b></td>
-				</tr>
+			<table width='100%'>
+				<colgroup>
+					<col width='10%'>
+					<col width='45%'>
+					<col>
+				</colgroup>
 				
-				<tr>
-					<td class='tdLooseTop'><b>AES70-1-2024</b></td>
-					<td class='tdLooseTop'>
-					 Overall architecture of AES70 and mechanisms of AES70.
-					 Also known as OCF.
-					</td>
-					<td class='tdLooseTop'>
-						<a rel=noopener target=_blank href='https://aes2.org/publications/standards-store/?id=120'>
-							AES70-1-2024: AES standard for Audio applications of networks - Open Control Architecture - Part 1: Framework
-						</a>
-					</td>
-				</tr>
+				<thead>
+					<tr bgcolor=#c0c0c0>
+						<th><b>Standard</b></th>
+						<th><b>Contents</b></th>
+						<th><b>Download Link</b></th>
+					</tr>
+				</thead>
 				
-				<tr><td colspan=3 class='sep''>&nbsp;</td></tr>
-				
-				<tr>
-					<td class='tdLooseTop'><b>AES70-2-2024</b></td>
-					<td class='tdLooseTop'>
-					 Object-oriented class structure that defines the functional repertoire 
-					 (connection management, control, and monitoring) of AES70. 
-					 Also known as OCC.
-					</td>
-					<td class='tdLooseTop'>
-						<a rel=noopener target=_blank href='https://aes2.org/publications/standards-store/?id=121'>
-							AES70-2-2024: AES standard for Audio applications of networks - Open Control Architecture - Part 2: Class structure
-						</a>
-					</td>
-				</tr>
-				
-				<tr><td>&nbsp;</td></tr>
-				
-				<tr>
-					<td class='tdLooseTop'><b>AES70-2-2024,<br>Annex A</b></td>
-					<td class='tdLooseTop'>
-						<p>
-							Formal specification of AES70 class structure in Unified Modeling Language (UML). 
-						</p>
-						<p>
-							Available in Enterprise Architect format (.EAP file extension) or XMI format (.XMI file extension).
-							See <a href=#UML>Unified Modeling Language</a> below.
-						</p>
-					</td>
-
-					<td class='tdLooseTop'>
-						<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.eap'>
-							www.aes.org/standards/models/AES70-2-2024-AnnexB.eap
-						</a>
-						<br>
-						or
-						<br>
-						<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.xmi'>
-							www.aes.org/standards/models/AES70-2-2024-AnnexB.xmi 
-						</a>
-					</td>
-				</tr>
-				
-				<tr><td colspan=3 class='sep'>&nbsp;</td></tr>
-				
-				<tr>
-					<td class='tdLooseTop'><b>AES70-3-2024</b></td>
-					<td class='tdLooseTop'>
-						Specification of OCP.1, a compact binary protocol for AES70 that runs over IP networks.  
-						Defines variants for using TCP, TCP/SSL, UDP, or WebSocket transport protocols.
-					</td>
-					<td class='tdLooseTop'>
-						<a rel=noopener target=_blank href='http://www.aes.org/publications/standards/search.cfm?docID=103'>
-							AES70-3-2024: AES standard for Audio applications of networks - Open Control Architecture - Part 3: Protocol for TCP/IP Networks
-						</a>
-					</td>
-				</tr>
-				
-				<tr>
-					<td class='tdLooseTop'><b>AES70-3-2024,<br>Annex B</b></td>
-					<td class='tdLooseTop'>
-						<p>
-							Formal specification of OCP.1 in Unified Modeling Language (UML). 
-						</p>
-						<p>
-							Available in Enterprise Architect format (.EAP file extension) or XMI format (.XMI file extension).
-							See <a href=#UML>Unified Modeling Language</a> below.
-						</p>
-					</td>
+				<tbody>
+					<tr>
+						<td class='tdLooseTop'><b>AES70-1-2024</b></td>
+						<td class='tdLooseTop'>
+						 Overall architecture of AES70 and mechanisms of AES70.
+						 Also known as OCF.
+						</td>
+						<td class='tdLooseTop'>
+							<a rel=noopener target=_blank href='https://aes2.org/publications/standards-store/?id=120'>
+								AES70-1-2024: AES standard for Audio applications of networks - Open Control Architecture - Part 1: Framework
+							</a>
+						</td>
+					</tr>
 					
-					<td class='tdLooseTop'>
-						<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.eap'>
-							www.aes.org/standards/models/AES70-3-2024-AnnexB.eap
-						</a>
-						<br>
-						or
-						<br>
-						<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.xmi'>
-							www.aes.org/standards/models/AES70-3-2024-AnnexB.xmi 
-						</a>
-					</td>
-				</tr>
-				
-				<tr><td colspan=3 class='sep''>&nbsp;</td></tr>
-				
-				<tr>
-					<td class='tdLooseTop'><b>AES70-22-2024</b></td>
-					<td class='tdLooseTop'>
-						Using AES70 to manage connections of the Milan AVB media transport protocol.
-					</td>
-					<td class='tdLooseTop'>
-						<a rel=noopener target=_blank href='https://aes2.org/publications/standards-store/?id=123'>
-							AES70-22-2024: AES standard for audio applications of networks - Open Control Architecture - Part 22: Using AES70 to manage Milan media transport
-						</a>
-					</td>
-				</tr>
+					<tr><td colspan=3 class='rowsep'> <hr height=1px color='#C0C0C0' /> </td></tr>
+					
+					<tr>
+						<td class='tdLooseTop'><b>AES70-2-2024</b></td>
+						<td class='tdLooseTop'>
+						 Object-oriented class structure that defines the functional repertoire 
+						 (connection management, control, and monitoring) of AES70. 
+						 Also known as OCC.
+						</td>
+						<td class='tdLooseTop'>
+							<a rel=noopener target=_blank href='https://aes2.org/publications/standards-store/?id=121'>
+								AES70-2-2024: AES standard for Audio applications of networks - Open Control Architecture - Part 2: Class structure
+							</a>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class='tdLooseTop'><b>AES70-2-2024 <br>Annex A</b></td>
+						<td class='tdLooseTop'>
+								Formal specification of AES70 class structure in Unified Modeling Language (UML). 
+								Available in Enterprise Architect format (.EAP file extension) or XMI format (.XMI file extension).
+								See <a href=#UML>Unified Modeling Language</a> below.
+						</td>
 
-				<tr><td colspan=3 class='sep''>&nbsp;</td></tr>
-								
+						<td class='tdLooseTop'>
+							<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.eap'>
+								www.aes.org/standards/models/AES70-2-2024-AnnexB.eap
+							</a>
+							<br>
+							or
+							<br>
+							<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.xmi'>
+								www.aes.org/standards/models/AES70-2-2024-AnnexB.xmi 
+							</a>
+						</td>
+					</tr>
+					
+					<tr><td colspan=3 class='rowsep'> <hr height=1px color='#C0C0C0' /> </td></tr>
+					
+					<tr>
+						<td class='tdLooseTop'><b>AES70-3-2024</b></td>
+						<td class='tdLooseTop'>
+							Specification of OCP.1, a compact binary protocol for AES70 that runs over IP networks.  
+							Defines variants for using TCP, TCP/SSL, UDP, or WebSocket transport protocols.
+						</td>
+						<td class='tdLooseTop'>
+							<a rel=noopener target=_blank href='http://www.aes.org/publications/standards/search.cfm?docID=103'>
+								AES70-3-2024: AES standard for Audio applications of networks - Open Control Architecture - Part 3: Protocol for TCP/IP Networks
+							</a>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class='tdLooseTop'><b>AES70-3-2024 <br>Annex B</b></td>
+						<td class='tdLooseTop'>
+							Formal specification of OCP.1 in Unified Modeling Language (UML). 
+							Available in Enterprise Architect format (.EAP file extension) or XMI format (.XMI file extension).
+							See <a href=#UML>Unified Modeling Language</a> below.
+						</td>
+						
+						<td class='tdLooseTop'>
+							<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.eap'>
+								www.aes.org/standards/models/AES70-3-2024-AnnexB.eap
+							</a>
+							<br>
+							or
+							<br>
+							<a rel=noopener target=_blank href='http://www.aes.org/standards/models/AES70-3-2024-AnnexB.xmi'>
+								www.aes.org/standards/models/AES70-3-2024-AnnexB.xmi 
+							</a>
+						</td>
+					</tr>
+					
+					<tr><td colspan=3 class='rowsep'> <hr height=1px color='#C0C0C0' /> </td></tr>
+					
+					<tr>
+						<td class='tdLooseTop'><b>AES70-22-2024</b></td>
+						<td class='tdLooseTop'>
+							"Adaptation" standard that specifies how to use AES70 for managing connections 
+							of the Milan AVB media transport protocol.
+						</td>
+						<td class='tdLooseTop'>
+							<a rel=noopener target=_blank href='https://aes2.org/publications/standards-store/?id=123'>
+								AES70-22-2024: AES standard for audio applications of networks - Open Control Architecture - Part 22: Using AES70 to manage Milan media transport
+							</a>
+						</td>
+					</tr>
+
+					<tr><td colspan=3 class='rowsep'> <hr height=1px color='#C0C0C0' /> </td></tr>
+				</tbody>
 			</table>
 			
       <h2 id='UML'>Unified Modeling Language (UML)</h2>
