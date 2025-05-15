@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and limitations 
 
 # Contribution
 
-Anyone may contribute this project by submitting a Git Pull request
+Anyone may contribute to this project by submitting a Git Pull Request
 to the project's repository.  No prior authorization is required.  
 
 The comments field of every submitted Pull request 
