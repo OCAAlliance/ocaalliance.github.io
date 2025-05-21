@@ -15,24 +15,24 @@ See the License for the specific language governing permissions and limitations 
 
 # Contribution
 
-Anyone may contribute to this project by submitting a Git Pull Rgit pushequest
+Anyone may contribute this project by submitting a Git Pull Request
 to the project's repository.  No prior authorization is required.  
 
-The comments field of every submitted Pull request 
+The comments field of every submitted Pull Request 
 must contain a brief text that certifies the contributed content complies with the terms of the 
 [Developer's Certificate of Origin (DCO)](https://developercertificate.org/)
 a simple document written by the Linux Foundation that attests the contributor
 has sufficient rights to make the contribution.
 
-Pull requests without DCO certifications will not be accepted by the Repository Manager,
+Pull Requests without DCO certifications will not be accepted by the Repository Manager,
 and should be resubmitted with certification included.
 
-The required Pull request text is as follows:	
+The required Pull Request text is as follows:	
 
-	The entire content of this Pull request complies with
+	The entire content of this Pull Request complies with
 	the Linux Developer Certificate of Origin, the text of which is at
 	https://developercertificate.org/. <Full name> <email>
 
 # Guidelines
 
-Full guidelines for use of and contribution to OCA Alliance open-source software products are here: [https://ocaalliance.github.io/opensource.html](https://ocaalliance.github.io/opensource.html).
+Full guidelines for use of and contribution to OCA Alliance open-source software projects are here: [https://ocaalliance.github.io/opensource.html](https://ocaalliance.github.io/opensource.html).
