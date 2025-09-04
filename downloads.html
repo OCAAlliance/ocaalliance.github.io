@@ -43,21 +43,71 @@
 			</div>
 		</div>
     <div class=content>
-			<p class="tight">
+			<p>
 				This page provides access to tools from OCA Alliance members that aid developers 
 				and supporters of AES70-based equipment and systems. Both commercial and 
 				noncommercial products are included.  Rules covering the listings are here:
-				<div class="in">
+
+				<div class="in" style="margin-top:9pt">
           <a target=_blank href='https://OCAAlliance.github.io/downloads/ListingRules.pdf'>
             https://OCAAlliance.github.io/downloads/ListingRules.pdf
           </a>.
         </div>
 			</p>
+			
 			<p> 
 				See also the  
 				<a target=_blank href='repositories.html'>Repositories page</a>
 				for listings of OCA-related open-source GitHub repositories.
+			</p>		
+			
+			<!--DeusO C# Controller Library --------------------------------------------------->
+			
+			<h2 class='headSep'> DeusO AES70.NET - C# controller Library for AES70</h2>
+
+			<p>
+				This repository contains a C# implementation of AES70-2018 from
+				OCA Alliance member <a href='https://deuso.de'>DeusO</a>, a developer of 
+				web-based user interfaces and control protocol implementations.
+				It offers a collection of APIs for discovering, controlling, and monitoring 
+				remote OCA objects.
 			</p>
+			
+			 <table>
+        <tr>
+					<td class='nospace'>Developer:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='https://DeusO.de'>
+							DeusO GmbH
+						</a>
+					</td>
+				</tr>
+        <tr>
+					<td class='nospace'>Repository:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='https://github.com/DeutscheSoft/libaes70.NET'>
+							https://github.com/DeutscheSoft/libaes70.NET
+						</a>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='nospace'>System Requirement:</td>
+					<td class='nospace'>.NET framework 4.5 or higher
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='nospace'> License:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='https://mit-license.org/'>
+							MIT License
+						</a>
+					</td>
+				</tr>			
+      </table>
+			
+			<!--Focusrite virtual device ------------------------------------------------------->
 			
       <h2 class='headSep'>Focusrite RedNet Virtual OCA Device</h2>
 
@@ -69,13 +119,27 @@
         It is useful when testing OCA Controllers.
         The device simulation is available as a Windows executable.
        </p>
-			 <p>
-        Download ZIP Archive here: &nbsp;&nbsp;
-					<a href='downloads/Focusrite RedNet Virtual OCA Device.zip' target=_blank>
-						Focusrite RedNet Virtual OCA Device.zip
-					</a>
-      </p>
-
+			 <table>
+        <tr>
+					<td class='nospace'>Download:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='downloads/Focusrite RedNet Virtual OCA Device.zip' target=_blank>
+							Focusrite RedNet Virtual OCA Device.zip
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td class='nospace'> License:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='licensing\General OCA Alliance Freeware License .pdf'>
+							General OCA Alliance Freeware License
+						</a>
+					</td>
+				</tr>
+      </table>
+			
+			<!--AES70.js ---------------------------------------------------------------------->
+			
       <h2 class='headSep'>AES70.js JavaScript library</h2>
       
       <p>
@@ -86,6 +150,36 @@
         and as an NPM package at
         (<a rel=noopener target=_blank href='https://www.npmjs.com/package/aes70'>https://www.npmjs.com/package/aes70</a>).
       </p>
+			 <table>
+        <tr>
+					<td class='nospace'>Repository:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='https://github.com/DeutscheSoft/AES70.js'>
+							https://github.com/DeutscheSoft/AES70.js
+						</a>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='nospace'> NPM package:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='https://www.npmjs.com/package/aes70'>
+							https://www.npmjs.com/package/aes70
+						</a>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='nospace'> License:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.html'>
+							GNU General Public License, version 2
+						</a>
+					</td>
+				</tr>			
+      </table>
+			
+			<!--OCA Implementation Chart ------------------------------------------------------>
 
       <h2 class='headSep'>AES70 Implementation Chart</h2>
 
@@ -94,13 +188,8 @@
 				It is similar in purpose to the "MIDI Implementation Chart" pages frequently found in user manuals of MIDI-controlled devices.
         The AES70 Implementation chart is not part of the AES70 standard itself, but instead a recommended practice offered by the OCA Alliance.
       </p>
-      <p>
-        Download here: &nbsp;&nbsp;
-				<a target=_blank href='downloads/AES70 Implementation Chart v06 .xltm'>
-					OCA Implementation Chart v06 .xltm
-				</a>
-      </p>
-      <p>
+			
+			<p>
 				Here are example implementation charts for OCA devices mentioned elsewhere in this site:
       </p>
       <ul>
@@ -115,20 +204,41 @@
 					</a> 
 				</li>
       </ul>
+			
+			 <table>
+        <tr>
+					<td class='nospace'>Download:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='downloads/AES70 Implementation Chart v06 .xltm'>
+							OCA Implementation Chart v06 .xltm
+						</a>
+					</td>
+				</tr>
+      </table>
+			
+			<!--Wireshark Legacy Plugin ------------------------------------------------------->
+			
 		
       <h2 class='headSep'>OCA Wireshark Legacy Plugin</h2>
 
       <p>
-        <a rel=noopener target=_blank href='https://wireshark.org/'>Wireshark</a> is a widely used network protocol analyzer. Beginning with Wireshark 4.0, an OCA plugin is included in its standard distribution. 
-			</p>
-			
-			<p>
+        <a rel=noopener target=_blank href='https://wireshark.org/'>Wireshark</a> is a widely used network protocol analyzer.  
+				Beginning with Wireshark 4.0, an OCA plugin is included in its standard distribution.
 				For Wireshark versions before 4.0, this plugin allows analyzing OCA network traffic.
-        Download here: &nbsp;&nbsp;
-				<a target=_blank href='downloads/OCP.1.lua'>
-					OCP.1.lua
-				</a>
       </p>
+			
+			 <table>
+        <tr>
+					<td class='nospace'>Download:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='downloads/OCP.1.lua'>
+							OCP.1.lua
+						</a>
+					</td>
+				</tr>
+      </table>
+			
+			<!--OCA for Video Devices --------------------------------------------------------->		
 	  			
 			<h2 class='headSep'>OCA for Video Devices - An Experimental Specification </h2>
 			
@@ -142,13 +252,20 @@
 				video camera from a major broadcast equipment manufacturer.  This model is presented in the 
 				download, a six-slide presentation.
 			</p>
-			<p class="loose">
-				Download here (6 slides):&nbsp;&nbsp;
-				<a target=_blank href='downloads/Typical Production Video Camera - OCA Object Model v05 .pdf'>
-					Typical Production Video Camera - OCA Object Model v05 .pdf
-				</a>
-			</p>
+			
+			 <table>
+        <tr>
+					<td class='nospace'>Download:</td>
+					<td class='nospace'>
+						<a rel=noopener target=_blank href='downloads/Typical Production Video Camera - OCA Object Model v05 .pdf'>
+							Typical Production Video Camera - OCA Object Model v05 .pdf
+						</a>
+					</td>
+				</tr>
+      </table>
 
+			<!--Member Downloads -------------------------------------------------------------->
+			<!--
       <h2 class='headSep'>OCA Alliance member downloads</h2>
 
       <p>
@@ -158,6 +275,7 @@
 					http://ocaalliance.com/membership/
 				</a>.
       </p>
+			-->
     </div>
   </body>
 </html>
