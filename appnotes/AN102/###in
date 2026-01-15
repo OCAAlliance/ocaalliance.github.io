@@ -1,0 +1,186 @@
+$macro(top,number,title,date,author,email)
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<meta charset="UTF-8">
+		<title>$(title)</title>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab" rel="stylesheet">		
+    <link rel=stylesheet type='text/css' href='../css/appnote.css'>
+  </head>
+	<body>
+		<table width='100%' bbgcolor=#d0d0d0>
+			<col width='15%'>
+			<col>
+			<tbody>
+				<tr>
+					<td>
+						<a href='index.html'>
+							<img src='../images/OCA-Logo-300.webp' width='91px' height='42px' alt='OCA Alliance Logo'/>
+						</a>
+					</td>
+					<td class='header-right'>
+						<span class='header-right'>
+							Application Note
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class='banner'>
+			<div class='title'>
+				<h1>$(number): $(title)</h1>
+			</div>
+		</div>	
+		<table width='100%'>
+			<tr>
+				<td class='auth'> 
+					$(author) | <a href='mailto:$(email)'>$(email)</a>
+				</td>
+				<td  class='auth' style="text-align:right"> $(date) </td>
+			</tr>
+		</table>		
+$endmacro
+\
+$macro(payload)
+		<div class="main">	
+$endmacro
+\
+$macro(tocbegin)
+		<div class='tocarea'>
+			<p class='toctitle'>Contents</p>
+			<div class='tocitems'>
+$endmacro
+\
+$macro(tocitem,level,what)
+$py(indent = "&nbsp;" * ((level-1)*3))
+				<p class='tocitem'>
+					$(indent)<a href='#$(what)'>$(what) </a>
+				</p>
+$endmacro
+\
+$macro(tocend)
+			</div>
+		</div>
+$endmacro
+\
+$macro(content)
+$endmacro
+\
+$macro(bottom,date)
+			<p class='copyright'>&copy; OCA Alliance $(date)</p>
+		</div>
+	</body>
+</html>\
+$endmacro
+\
+$macro(code,text)
+<span class='code'>$(text)</span> \
+$endmacro
+\
+$macro(pic,path,caption)
+			<div align='center'>
+				<img src='$(path)' alt='$(caption)'>
+				<p class='caption'>$(caption)</p>
+			</div>
+$endmacro
+\
+$macro(head,level,ID, text)
+			<H$(level) ID='$(ID)'>
+				$(text)
+			</H$(level)>
+$endmacro
+\
+$macro(section,level,text)
+	<h$(level) id='$(text)'>$(text)</h$(level)>
+$endmacro
+\
+$macro(sectionpage,level,text)
+	<h$(level) id='$(text)' class='newpage'>$(text)</h$(level)>
+$endmacro
+\
+$macro(standards)
+		<table>
+			<colgroup>
+				<col width='72pt'>
+				<col width='72pt'>
+				<col>
+			</colgroup>
+			<tbody>			
+				<tr>
+					<td class='stdhdr'>ID</td>
+					<td class='stdhdr' align='center'>Current Version</td>
+					<td class='stdhdr'>Name</td>
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>
+				<tr>
+					<td class='std'>AES70-1</td>
+					<td class='std' align='center'>2024</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 1: Framework
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-2</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 2: Class structure
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-3</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 3: OCP.1 Binary protocol 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-4</td>
+					<td class='std' align='center'>2026</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 4: OCP.2 JSON-based protocol 
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-21</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 21:  Using AES70 to manage AES67 and SMPTE ST 2110 30 media transport 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-22</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 22: Using AES70 to manage Milan™ media transport
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-23</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture -
+						Part 23: Using AES70 to manage Dante® media transport
+					</td>		
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>				
+			</tbody>
+		</table>
+$endmacro$top("AN102","Control Grouping","2026.01.15","Jeff Berryman"," veezeronline@gmail.com")
+
+$content()
+
+<h2> Under construction </h2>		
+
+$bottom('2026')

@@ -1,0 +1,58 @@
+$top("AN100"," Designing an AES70 Device ","2026.01.08","Jeff Berryman"," veezeronline@gmail.com")
+
+$payload()
+
+$tocbegin()
+$tocitem(1,"Introduction")
+$tocitem(1,"Choosing AES70 objects")
+$tocitem(2,"Managers")
+$tocitem(2,"AES70 classes")
+$tocitem(2,"AES70 objects")
+$tocitem(2,"Controlling complex functions")
+$tocitem(2,"Proprietary classes")
+$tocitem(1,"Organizing objects")
+$tocitem(2,"Blocks")
+$tocitem(3,"Nesting")
+$tocitem(3,"Root Block")
+$tocitem(1,"Identifying objects")
+$tocitem(2,"Object numbers")
+$tocitem(2,"Roles and rolepaths")
+$tocitem(2,"Labels")
+$tocitem(2,"Finding objects")
+$tocitem(1,"References")
+$tocitem(2,"AES Standards")
+$tocend()
+
+$content()
+
+		$section(1,"Introduction")
+		<p>
+			blah
+		</p>
+		
+		$section(1,"Whatever")
+		<p>
+			blah
+		</p>
+
+		$pic('path','caption')
+		
+		$section(2,"subsection title")
+
+		$sectionpage(1,"References")
+		$section(2,"AES70 standards")
+			<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+			
+			$standards()
+			
+			<p> Copies of these standards are available from the AES Standards Store, 
+				<a href='https://aes2.org/publications/standards-store/'>
+					aes2.org/publications/standards-store.
+				</a>
+			</p>
+			
+			<p>
+				AES standards documents are free to AES members.  You're encouraged to join!
+			</p>
+			
+$bottom('copyright year')
