@@ -1,0 +1,253 @@
+$top("AN100"," Designing an AES70 Device ","2026.01.08","Jeff Berryman"," veezeronline@gmail.com")
+
+$payload()
+
+$tocbegin()
+$tocitem(1,"Introduction")
+$tocitem(1,"Choosing AES70 objects")
+$tocitem(2,"Managers")
+$tocitem(2,"AES70 classes")
+$tocitem(2,"AES70 objects")
+$tocitem(2,"Controlling complex functions")
+$tocitem(2,"Proprietary classes")
+$tocitem(1,"Organizing objects")
+$tocitem(2,"Blocks")
+$tocitem(3,"Nesting")
+$tocitem(3,"Root Block")
+$tocitem(1,"Identifying objects")
+$tocitem(2,"Object numbers")
+$tocitem(2,"Roles and rolepaths")
+$tocitem(2,"Labels")
+$tocitem(2,"Finding objects")
+$tocitem(1,"References")
+$tocitem(2,"AES Standards")
+$tocend()
+
+$content()
+
+		$section(1,"Introduction")
+		<p>
+			This application note offers an approach for designing AES70-controllable devices.  It applies to both physical devices and virtual (e.g. cloud-based) devices.
+		</p>
+
+		<p>
+			There are three steps, as follows:
+		</p>
+		<div class='in'>
+			<p>
+				<a href='#Choosing AES70 objects'><span class='inlinehdr'>Choose AES70 objects for your device.</span></a>
+				Working from the AES70 class tree defined in AES70-2, select a repertoire of objects that reflect the aspects of device function that AES70 will control and/or monitor.
+			</p>
+			
+			<p>
+				<a href='#Organizing objects'><span class='inlinehdr'>Organize the objects.</span></a>
+				Using AES70 object collection features, organize the chosen objects into meaningful sets.
+			</p>
+			
+			<p>
+				<a href='#Identifying objects'><span class='inlinehdr'>Identify the objects.</span></a>
+				Assign appropriate identification properties to each object.
+			</p>
+		</div>
+		
+		$section(1,"Choosing AES70 objects")
+		<p>
+			When you're designing an AES70 device, one of the first steps is choosing the device's set of AES70 control and monitoring objects.  Here are some basic concepts:
+		</p>
+		<div class='in'>
+			<p>
+				<span class='inlinehdr'>Objects are interfaces.</span>  
+				AES70 is a control and monitoring interface definition.  In your device, each AES70 object will define a little part of the device's network control interface.  Once you've picked and configured all the objects, your device's network control interface is completely specified.
+			</p>
+			<p>
+				<span class='inlinehdr'>Classes.</span>  
+				Classes are templates for objects.  Each kind of object is constructed from a particular class.  AES70 defines about 100 classes.  About 60 of these classes cover common audio processing and monitoring functions - gain, equalization, delay, level metering, and so on.  The other 40 cover other important functions such as managing digital streaming audio input/output, handling presets, and more.  Class names all begin with <b>$code("\"Oca\"")</b>, e.g. $code("OcaGain") is a class for constructing gain control objects.
+			</p>
+			<p>
+				<span class='inlinehdr'>Selecting objects.</span>
+				For each device function you want to control and/or monitor with AES70, you pick an AES70 object.  For example, an AES70-controllable gain function would be assigned an OcaGain object (i.e. an object constructed from class $code("OcaGain").  A level-monitoring function would be assigned an $code("OcaAudioLevelSensor") object, and so on.
+			</p>
+			<p>
+				<span class='inlinehdr'>Multiplicity.</span>
+				An AES70 class can be instantiated any number of times. If your device has 24 network-controllable gain controls, you'll have 24 independent $code("OcaGain") objects.
+			</p>
+		</div>
+		
+		$section(2,"Managers")
+		<p>
+		In addition to control and monitoring objects, AES70 requires a few other objects for housekeeping purposes.  These objects are called 'managers".  At a minimum, your device will need two of them:  an $code("OcaDeviceManager") object, to contain basic device info (manufacturer, model, version and so on) and an $code("OcaSubscriptionManager") object, to manage 'subscriptions", which are monitoring relationships between devices and controllers. 
+		</p>
+		
+		<p>
+		<i><b>Note to Dante users:</b></i>  an AES70 subscription isn't the same as a Dante subscription.  A Dante subscription is a media connection request; an AES70 subscription is a controller's binding to device-generated event notifications.
+		</p>
+		
+		$section(2,"AES70 classes")
+		<p>
+			Most of AES70's 100 classes are of a specific nature - $code("OcaGain, OcaMute, OcaFilterParametric,") etcetera - but there is also a rich set of generic classes that allow access to nonstandard parameters.  Generic classes are provided for standard programming datatypes.  
+		</p>
+		<p>
+			For example, the classic Rupert Neve Master Bus Transformer (MBT) equalizer has a number of controls with unconventional labels - 'blue", 'red", 'harmonics", 'blend", etc. that don't correspond to any specific AES70 class.
+		</p>
+		
+		$pic('images/Neve-EQ.png','Neve Master Bus Transformer')
+			
+		<p>
+			A good way to automate this equalizer would be to use specific classes where applicable- e.g $code('OcaGain') objects for gain controls - and generic classes for the special controls.  A good choice in this case would be the $code("OcaFloat32") class, which allows control of an arbitrary 32-bit IEEE floating-point parameter.  
+		</p>
+		
+		$section(2,"AES70 objects")
+		<p>
+			An AES70 object is an interface to a function, not an implementation of it.  The picture below shows a whimsical example in which an AES70-controlled robot arm automates the controls of a vintage Pultec equalizer.  The robot arm contains AES70 objects that correspond to the knobs on the equalizer's front panel.  An AES70 controller doesn't know - or need to know - that the controls are implemented robotically.
+		</p>
+
+		$pic('images/Pultec-EQ.png','Pultec EQ + AES70 robot arm')
+		
+		$section(2,"Controlling complex functions")
+		
+		<p>
+			Sometimes controlling a complex device function will require more than one AES70 object.  For example, controlling an advanced compression function could require three or more objects.  There's nothing wrong with that.  If there's a complex function in your device that doesn't match any of the standard classes, feel free to define a collection of objects to cover all of its features.
+		</p>
+		
+		$section(2,"Proprietary classes")
+		<p>
+			AES70 allows implementers to define their own classes when necessary.  This topic is covered in a separate Application Note.
+		</p>
+		
+		$section(1,"Organizing objects")
+		<p>
+			Once you've chosen your AES70 objects for your device, you'll need to organize them.
+		</p>
+		
+		$section(2,"Blocks")
+		<p>
+			The main organizing element in AES70 is the $code("OcaBlock") object, which is a collector for other objects.  An $code("OcaBlock") object ("Block' for short) doesn't have any control or monitoring functions of its own - it's just a grouping tool to help keep things organized.
+		</p>
+		<p>
+			For example, consider a 64-channel mixer.  Each channel will have a number of control and monitoring objects - gain, equalization, mute, level metering, and so on.  To make an AES70 design for such a mixer, you'd define a Block that contained all of the objects for one channel, then duplicate that Block 63 times to handle the other channels.
+		 </p>
+		 
+		 $pic('images/mixer.jpg','64-channel mixer')
+		 
+		$section(3,"Nesting")
+		<p>
+			You can put Blocks inside Blocks, to any level.
+		</p>
+		<p>
+			For example, maybe your mixer uses a three-band parametric equalizer on all its inputs and outputs.  You could design a Block with three $code("OcaFilterParametric") objects, one for each band, plus an $code("OcaSwitch") object for the in/out button.  Then you could insert instances of that Block design throughout your design where needed - in input channel Blocks, in group Blocks, in aux send Blocks, whatever.
+		</p>
+		
+		$pic('images/nesting.jpg','Nested blocks')
+		
+		$section(3,"Root Block")
+		<p>
+			Except for Manager objects, every AES70 object must reside inside a Block.  This includes $code("OcaBlock") objects.  By default, everything is contained in one special Block called the <i><b>Root Block</b></i>.  The Root Block is the only Block that stands alone, without an enclosing Block.  When you define your own Blocks, such as the mixer channel Blocks envisioned above, they will all reside somewhere inside the Root Block - either directly in the Root Block, or in another Block that's nested inside the Root Block.
+		</p>
+		
+		$section(1,"Identifying objects")
+		<p>
+			Once you've chosen your AES70 objects for your device and organized them, you'll need to give them identifiers.
+		</p>
+		
+		$section(2,"Object Numbers")
+		<p>
+			Every AES70 object in a device has a unique 32-bit unsigned <b>Object Number</b>, or ONo for short.  All AES70 control and monitoring commands use ONos to identify what they're controlling or monitoring.  ONos obey two rules:
+		</p>
+		<div class='in'>
+			<p>
+				<b>ONos are static.</b>  Once an object has been defined, its ONo mustn't change.  For devices with fixed configurations, ONo values will be chosen at product design time.  For software-defined devices that allow controllers to add, change, and delete objects on the fly, ONo values are chosen during device operation.
+			</p>
+				
+			<p>
+				<b>ONos are arbitrary.</b>  AES70 doesn't require ONo values to doesn't depend what class their objects come from.  For example, a device might have three $code("OcaGain") objects with ONos of 5000, 123456, and 2000001.  As a device designer, you're free to allocate ONo values however you want, as long as every object in the device has a unique ONo value in the range 4,096 ... 4,294,967,295.  
+			</p>
+			<p>
+				There are two exceptions to this rule:
+			</p>
+			<ul>
+				<li class='nosp'>
+					<b>Manager objects</b>, which AES70 assigns predefined ONo values starting with 1 for the Device Manager. 
+				</li>
+				
+				<li class='nosp'>
+					<b>The Root Block</b>, whose ONo is always 100.
+				</li>
+			</ul>
+		</div>
+		
+		$section(2,"Rolepaths")
+		<p>
+			Rolepaths are an optional AES70 mechanism that can be used to identify objects by name.  
+			Rolepaths don't replace Object Numbers, but they are a useful mechanism for intuitive object identification.
+		</p>
+		
+		$section(3,"Roles")
+		<p>
+			Every AES70 object - including Block objects - has a property named $code("Role") whose value is assigned when the object is defined, and doesn't change thereafter.  $code("Role") is comparable to the text that would be etched onto a device's front panel for a conventional control:  'Channel 1 Gain", 'Channel 2 Level", and so on.
+		</p>
+		
+		<p>
+			Normally, every object's Role value will be chosen to be unique within its containing Block.  
+		</p>
+		
+		<p class='tight'>
+			Like other objects, Blocks have $code("Role") values of their own.  The $code("Role") of the Root Block must always be a null string.
+		</p>
+			
+		$section(3,"Rolepaths")
+		<p>
+			Because every object lives in a Block, and Blocks can be nested, we can define an object's Rolepath that locates the object within its device.  An object's Rolepath is its own $code("Role") value prepended by the $code("Role") values of the Blocks that contain it, Root Block first. 
+		</p>
+		
+		<p class='tight'>
+			When using Rolepaths, we typically write the names by a "/", in the same way as file and folder paths are coded in normal computers. (In AES70 interfaces, a Rolepath is actually coded as an array of $code("Role") values.) 
+		</p>
+		
+		<p class='tight'>				
+			Here are Roles and Rolepaths for the 64-channel mixer example mentioned above. In this picture, $code("Roles") are shown in red, Rolepaths in blue.
+		</p>
+		
+		$pic('images/rolepaths.jpg','Rolepaths for 64-channel mixer')
+				
+		<p>
+			Using the Role / Rolepath mechanism is optional in AES70.  If you don't want to use it, you can just leave all your objects' $code("Role") properties blank.  However, using it will probably make the lives of developers and users simpler. 
+		</p>
+		
+		$section(2,"Labels")
+		 <p>
+			Except for Manager objects, every AES70 object has an optional $code("Label") property that controllers can change at any time to identify the purpose of the object in the application.  $code("Label") provides the same function as the tape-and-marker labels ("scribble strips") that system operators sometimes stick onto conventional control panels.
+		</p>
+		<p>
+			$code("Label") is a separate and distinct property from $code("Role").  $code("Role") values are set at time of object creation.  $code("Label") values are normally set by controllers, and will vary from application to application and time to time.
+		</p>
+		
+		$section(2,"Finding objects")
+		<p>
+			$code("OcaBlock") contains methods (i.e. functions) that allow controllers to find objects in several ways: 
+		</p>
+		<ul>
+			<li> By Object Number </li>
+			<li> By $code("Role")  </li>
+			<li> By Rolepath  </li>
+			<li> By $code("Label")  </li>
+		</ul>
+		<p>
+			Recursive options are provided, to allow a Controller to search a given $code("OcaBlock") and all of its contained $code("OcaBlocks") with a single method call.  Controllers that do not have prior knowledge of a device's objects can use these methods to compile a complete picture of a device's control and monitoring interface. 
+		</p>
+
+		$sectionpage(1,"References")
+		$section(2,"AES70 standards")
+			<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+			
+			$standards()
+			
+			<p> Copies of these standards are available from the AES Standards Store, 
+				<a href='https://aes2.org/publications/standards-store/'>
+					aes2.org/publications/standards-store.
+				</a>
+			</p>
+			
+			<p>
+				AES standards documents are free to AES members.  You're encouraged to join!
+			</p>
+$bottom('2026')

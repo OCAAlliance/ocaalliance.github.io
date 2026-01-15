@@ -1,0 +1,26 @@
+/* Compact table styles.  Adapted from https://www.quackit.com */
+
+.table-compact {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.table-compact thead th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-compact th,
+.table-compact td {
+    text-align: left;
+    padding: 5px 8px; 
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Optional: remove the bottom border on the last row for a cleaner look */
+.table-compact tbody tr:last-of-type td {
+    border-bottom: none;
+}

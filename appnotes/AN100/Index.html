@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<meta charset="UTF-8">
+		<title> Designing an AES70 Device </title>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab" rel="stylesheet">		
+    <link rel=stylesheet type='text/css' href='../css/appnote.css'>
+  </head>
+	<body>
+		<table width='100%' bbgcolor=#d0d0d0>
+			<col width='15%'>
+			<col>
+			<tbody>
+				<tr>
+					<td>
+						<a href='index.html'>
+							<img src='../images/OCA-Logo-300.webp' width='91px' height='42px' alt='OCA Alliance Logo'/>
+						</a>
+					</td>
+					<td class='header-right'>
+						<span class='header-right'>
+							Application Note
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class='banner'>
+			<div class='title'>
+				<h1>AN100:  Designing an AES70 Device </h1>
+			</div>
+		</div>	
+		<table width='100%'>
+			<tr>
+				<td class='auth'> 
+					Jeff Berryman | <a href='mailto: veezeronline@gmail.com'> veezeronline@gmail.com</a>
+				</td>
+				<td  class='auth' style="text-align:right"> 2026.01.08 </td>
+			</tr>
+		</table>		
+
+		<div class="main">	
+
+		<div class='tocarea'>
+			<p class='toctitle'>Contents</p>
+			<div class='tocitems'>
+				<p class='tocitem'>
+					<a href='#Introduction'>Introduction </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Choosing AES70 objects'>Choosing AES70 objects </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Managers'>Managers </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#AES70 classes'>AES70 classes </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#AES70 objects'>AES70 objects </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Controlling complex functions'>Controlling complex functions </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Proprietary classes'>Proprietary classes </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Organizing objects'>Organizing objects </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Blocks'>Blocks </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Nesting'>Nesting </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Root Block'>Root Block </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Identifying objects'>Identifying objects </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Object numbers'>Object numbers </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Roles and rolepaths'>Roles and rolepaths </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Labels'>Labels </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Finding objects'>Finding objects </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#References'>References </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#AES Standards'>AES Standards </a>
+				</p>
+			</div>
+		</div>
+
+
+			<h1 id='Introduction'>Introduction</h1>
+		<p>
+			This application note offers an approach for designing AES70-controllable devices.  It applies to both physical devices and virtual (e.g. cloud-based) devices.
+		</p>
+
+		<p>
+			There are three steps, as follows:
+		</p>
+		<div class='in'>
+			<p>
+				<a href='#Choosing AES70 objects'><span class='inlinehdr'>Choose AES70 objects for your device.</span></a>
+				Working from the AES70 class tree defined in AES70-2, select a repertoire of objects that reflect the aspects of device function that AES70 will control and/or monitor.
+			</p>
+			
+			<p>
+				<a href='#Organizing objects'><span class='inlinehdr'>Organize the objects.</span></a>
+				Using AES70 object collection features, organize the chosen objects into meaningful sets.
+			</p>
+			
+			<p>
+				<a href='#Identifying objects'><span class='inlinehdr'>Identify the objects.</span></a>
+				Assign appropriate identification properties to each object.
+			</p>
+		</div>
+		
+			<h1 id='Choosing AES70 objects'>Choosing AES70 objects</h1>
+		<p>
+			When you're designing an AES70 device, one of the first steps is choosing the device's set of AES70 control and monitoring objects.  Here are some basic concepts:
+		</p>
+		<div class='in'>
+			<p>
+				<span class='inlinehdr'>Objects are interfaces.</span>  
+				AES70 is a control and monitoring interface definition.  In your device, each AES70 object will define a little part of the device's network control interface.  Once you've picked and configured all the objects, your device's network control interface is completely specified.
+			</p>
+			<p>
+				<span class='inlinehdr'>Classes.</span>  
+				Classes are templates for objects.  Each kind of object is constructed from a particular class.  AES70 defines about 100 classes.  About 60 of these classes cover common audio processing and monitoring functions - gain, equalization, delay, level metering, and so on.  The other 40 cover other important functions such as managing digital streaming audio input/output, handling presets, and more.  Class names all begin with <b><span class='code'>"Oca"</span> </b>, e.g. <span class='code'>OcaGain</span>  is a class for constructing gain control objects.
+			</p>
+			<p>
+				<span class='inlinehdr'>Selecting objects.</span>
+				For each device function you want to control and/or monitor with AES70, you pick an AES70 object.  For example, an AES70-controllable gain function would be assigned an OcaGain object (i.e. an object constructed from class <span class='code'>OcaGain</span> .  A level-monitoring function would be assigned an <span class='code'>OcaAudioLevelSensor</span>  object, and so on.
+			</p>
+			<p>
+				<span class='inlinehdr'>Multiplicity.</span>
+				An AES70 class can be instantiated any number of times. If your device has 24 network-controllable gain controls, you'll have 24 independent <span class='code'>OcaGain</span>  objects.
+			</p>
+		</div>
+		
+			<h2 id='Managers'>Managers</h2>
+		<p>
+		In addition to control and monitoring objects, AES70 requires a few other objects for housekeeping purposes.  These objects are called 'managers".  At a minimum, your device will need two of them:  an <span class='code'>OcaDeviceManager</span>  object, to contain basic device info (manufacturer, model, version and so on) and an <span class='code'>OcaSubscriptionManager</span>  object, to manage 'subscriptions", which are monitoring relationships between devices and controllers. 
+		</p>
+		
+		<p>
+		<i><b>Note to Dante users:</b></i>  an AES70 subscription isn't the same as a Dante subscription.  A Dante subscription is a media connection request; an AES70 subscription is a controller's binding to device-generated event notifications.
+		</p>
+		
+			<h2 id='AES70 classes'>AES70 classes</h2>
+		<p>
+			Most of AES70's 100 classes are of a specific nature - <span class='code'>OcaGain, OcaMute, OcaFilterParametric,</span>  etcetera - but there is also a rich set of generic classes that allow access to nonstandard parameters.  Generic classes are provided for standard programming datatypes.  
+		</p>
+		<p>
+			For example, the classic Rupert Neve Master Bus Transformer (MBT) equalizer has a number of controls with unconventional labels - 'blue", 'red", 'harmonics", 'blend", etc. that don't correspond to any specific AES70 class.
+		</p>
+		
+					<div align='center'>
+				<img src='images/Neve-EQ.png' alt='Neve Master Bus Transformer'>
+				<p class='caption'>Neve Master Bus Transformer</p>
+			</div>
+			
+		<p>
+			A good way to automate this equalizer would be to use specific classes where applicable- e.g <span class='code'>OcaGain</span>  objects for gain controls - and generic classes for the special controls.  A good choice in this case would be the <span class='code'>OcaFloat32</span>  class, which allows control of an arbitrary 32-bit IEEE floating-point parameter.  
+		</p>
+		
+			<h2 id='AES70 objects'>AES70 objects</h2>
+		<p>
+			An AES70 object is an interface to a function, not an implementation of it.  The picture below shows a whimsical example in which an AES70-controlled robot arm automates the controls of a vintage Pultec equalizer.  The robot arm contains AES70 objects that correspond to the knobs on the equalizer's front panel.  An AES70 controller doesn't know - or need to know - that the controls are implemented robotically.
+		</p>
+
+					<div align='center'>
+				<img src='images/Pultec-EQ.png' alt='Pultec EQ + AES70 robot arm'>
+				<p class='caption'>Pultec EQ + AES70 robot arm</p>
+			</div>
+		
+			<h2 id='Controlling complex functions'>Controlling complex functions</h2>
+		
+		<p>
+			Sometimes controlling a complex device function will require more than one AES70 object.  For example, controlling an advanced compression function could require three or more objects.  There's nothing wrong with that.  If there's a complex function in your device that doesn't match any of the standard classes, feel free to define a collection of objects to cover all of its features.
+		</p>
+		
+			<h2 id='Proprietary classes'>Proprietary classes</h2>
+		<p>
+			AES70 allows implementers to define their own classes when necessary.  This topic is covered in a separate Application Note.
+		</p>
+		
+			<h1 id='Organizing objects'>Organizing objects</h1>
+		<p>
+			Once you've chosen your AES70 objects for your device, you'll need to organize them.
+		</p>
+		
+			<h2 id='Blocks'>Blocks</h2>
+		<p>
+			The main organizing element in AES70 is the <span class='code'>OcaBlock</span>  object, which is a collector for other objects.  An <span class='code'>OcaBlock</span>  object ("Block' for short) doesn't have any control or monitoring functions of its own - it's just a grouping tool to help keep things organized.
+		</p>
+		<p>
+			For example, consider a 64-channel mixer.  Each channel will have a number of control and monitoring objects - gain, equalization, mute, level metering, and so on.  To make an AES70 design for such a mixer, you'd define a Block that contained all of the objects for one channel, then duplicate that Block 63 times to handle the other channels.
+		 </p>
+		 
+		 			<div align='center'>
+				<img src='images/mixer.jpg' alt='64-channel mixer'>
+				<p class='caption'>64-channel mixer</p>
+			</div>
+		 
+			<h3 id='Nesting'>Nesting</h3>
+		<p>
+			You can put Blocks inside Blocks, to any level.
+		</p>
+		<p>
+			For example, maybe your mixer uses a three-band parametric equalizer on all its inputs and outputs.  You could design a Block with three <span class='code'>OcaFilterParametric</span>  objects, one for each band, plus an <span class='code'>OcaSwitch</span>  object for the in/out button.  Then you could insert instances of that Block design throughout your design where needed - in input channel Blocks, in group Blocks, in aux send Blocks, whatever.
+		</p>
+		
+					<div align='center'>
+				<img src='images/nesting.jpg' alt='Nested blocks'>
+				<p class='caption'>Nested blocks</p>
+			</div>
+		
+			<h3 id='Root Block'>Root Block</h3>
+		<p>
+			Except for Manager objects, every AES70 object must reside inside a Block.  This includes <span class='code'>OcaBlock</span>  objects.  By default, everything is contained in one special Block called the <i><b>Root Block</b></i>.  The Root Block is the only Block that stands alone, without an enclosing Block.  When you define your own Blocks, such as the mixer channel Blocks envisioned above, they will all reside somewhere inside the Root Block - either directly in the Root Block, or in another Block that's nested inside the Root Block.
+		</p>
+		
+			<h1 id='Identifying objects'>Identifying objects</h1>
+		<p>
+			Once you've chosen your AES70 objects for your device and organized them, you'll need to give them identifiers.
+		</p>
+		
+			<h2 id='Object Numbers'>Object Numbers</h2>
+		<p>
+			Every AES70 object in a device has a unique 32-bit unsigned <b>Object Number</b>, or ONo for short.  All AES70 control and monitoring commands use ONos to identify what they're controlling or monitoring.  ONos obey two rules:
+		</p>
+		<div class='in'>
+			<p>
+				<b>ONos are static.</b>  Once an object has been defined, its ONo mustn't change.  For devices with fixed configurations, ONo values will be chosen at product design time.  For software-defined devices that allow controllers to add, change, and delete objects on the fly, ONo values are chosen during device operation.
+			</p>
+				
+			<p>
+				<b>ONos are arbitrary.</b>  AES70 doesn't require ONo values to doesn't depend what class their objects come from.  For example, a device might have three <span class='code'>OcaGain</span>  objects with ONos of 5000, 123456, and 2000001.  As a device designer, you're free to allocate ONo values however you want, as long as every object in the device has a unique ONo value in the range 4,096 ... 4,294,967,295.  
+			</p>
+			<p>
+				There are two exceptions to this rule:
+			</p>
+			<ul>
+				<li class='nosp'>
+					<b>Manager objects</b>, which AES70 assigns predefined ONo values starting with 1 for the Device Manager. 
+				</li>
+				
+				<li class='nosp'>
+					<b>The Root Block</b>, whose ONo is always 100.
+				</li>
+			</ul>
+		</div>
+		
+			<h2 id='Rolepaths'>Rolepaths</h2>
+		<p>
+			Rolepaths are an optional AES70 mechanism that can be used to identify objects by name.  
+			Rolepaths don't replace Object Numbers, but they are a useful mechanism for intuitive object identification.
+		</p>
+		
+			<h3 id='Roles'>Roles</h3>
+		<p>
+			Every AES70 object - including Block objects - has a property named <span class='code'>Role</span>  whose value is assigned when the object is defined, and doesn't change thereafter.  <span class='code'>Role</span>  is comparable to the text that would be etched onto a device's front panel for a conventional control:  'Channel 1 Gain", 'Channel 2 Level", and so on.
+		</p>
+		
+		<p>
+			Normally, every object's Role value will be chosen to be unique within its containing Block.  
+		</p>
+		
+		<p class='tight'>
+			Like other objects, Blocks have <span class='code'>Role</span>  values of their own.  The <span class='code'>Role</span>  of the Root Block must always be a null string.
+		</p>
+			
+			<h3 id='Rolepaths'>Rolepaths</h3>
+		<p>
+			Because every object lives in a Block, and Blocks can be nested, we can define an object's Rolepath that locates the object within its device.  An object's Rolepath is its own <span class='code'>Role</span>  value prepended by the <span class='code'>Role</span>  values of the Blocks that contain it, Root Block first. 
+		</p>
+		
+		<p class='tight'>
+			When using Rolepaths, we typically write the names by a "/", in the same way as file and folder paths are coded in normal computers. (In AES70 interfaces, a Rolepath is actually coded as an array of <span class='code'>Role</span>  values.) 
+		</p>
+		
+		<p class='tight'>				
+			Here are Roles and Rolepaths for the 64-channel mixer example mentioned above. In this picture, <span class='code'>Roles</span>  are shown in red, Rolepaths in blue.
+		</p>
+		
+					<div align='center'>
+				<img src='images/rolepaths.jpg' alt='Rolepaths for 64-channel mixer'>
+				<p class='caption'>Rolepaths for 64-channel mixer</p>
+			</div>
+				
+		<p>
+			Using the Role / Rolepath mechanism is optional in AES70.  If you don't want to use it, you can just leave all your objects' <span class='code'>Role</span>  properties blank.  However, using it will probably make the lives of developers and users simpler. 
+		</p>
+		
+			<h2 id='Labels'>Labels</h2>
+		 <p>
+			Except for Manager objects, every AES70 object has an optional <span class='code'>Label</span>  property that controllers can change at any time to identify the purpose of the object in the application.  <span class='code'>Label</span>  provides the same function as the tape-and-marker labels ("scribble strips") that system operators sometimes stick onto conventional control panels.
+		</p>
+		<p>
+			<span class='code'>Label</span>  is a separate and distinct property from <span class='code'>Role</span> .  <span class='code'>Role</span>  values are set at time of object creation.  <span class='code'>Label</span>  values are normally set by controllers, and will vary from application to application and time to time.
+		</p>
+		
+			<h2 id='Finding objects'>Finding objects</h2>
+		<p>
+			<span class='code'>OcaBlock</span>  contains methods (i.e. functions) that allow controllers to find objects in several ways: 
+		</p>
+		<ul>
+			<li> By Object Number </li>
+			<li> By <span class='code'>Role</span>   </li>
+			<li> By Rolepath  </li>
+			<li> By <span class='code'>Label</span>   </li>
+		</ul>
+		<p>
+			Recursive options are provided, to allow a Controller to search a given <span class='code'>OcaBlock</span>  and all of its contained <span class='code'>OcaBlocks</span>  with a single method call.  Controllers that do not have prior knowledge of a device's objects can use these methods to compile a complete picture of a device's control and monitoring interface. 
+		</p>
+
+			<h1 id='References' class='newpage'>References</h1>
+			<h2 id='AES70 standards'>AES70 standards</h2>
+			<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+			
+					<table>
+			<colgroup>
+				<col width='72pt'>
+				<col width='72pt'>
+				<col>
+			</colgroup>
+			<tbody>			
+				<tr>
+					<td class='stdhdr'>ID</td>
+					<td class='stdhdr' align='center'>Current Version</td>
+					<td class='stdhdr'>Name</td>
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>
+				<tr>
+					<td class='std'>AES70-1</td>
+					<td class='std' align='center'>2024</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 1: Framework
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-2</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 2: Class structure
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-3</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 3: OCP.1 Binary protocol 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-4</td>
+					<td class='std' align='center'>2026</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 4: OCP.2 JSON-based protocol 
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-21</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 21:  Using AES70 to manage AES67 and SMPTE ST 2110 30 media transport 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-22</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 22: Using AES70 to manage Milan™ media transport
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-23</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture -
+						Part 23: Using AES70 to manage Dante® media transport
+					</td>		
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>				
+			</tbody>
+		</table>
+			
+			<p> Copies of these standards are available from the AES Standards Store, 
+				<a href='https://aes2.org/publications/standards-store/'>
+					aes2.org/publications/standards-store.
+				</a>
+			</p>
+			
+			<p>
+				AES standards documents are free to AES members.  You're encouraged to join!
+			</p>
+			<p class='copyright'>&copy; OCA Alliance 2026</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,335 @@
+@font-face {
+    font-family: 'Rockwell BQ';
+    src: url('../fonts/Rockwell BQ.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Rockwell';
+    src: url('../fonts/Rockwell.otf') format('opentype');
+}
+
+body {
+    font-family: Baskerville;
+		font-variant-numeric: lining-nums;
+		font-size:11pt;
+		line-height:1.4;
+    color: black;
+		margin-left: 18px;
+		margin-right: 18px;
+}
+.content {
+    background-color: #fff;
+    margin-left: 8vw;
+    margin-right: 8vw;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+h1,h2,h3 {
+		font-family: Trebuchet MS;
+		color:#000080;
+		page-break-after: avoid;
+		font-weight: normal;
+}	
+
+a:link, a:visited {
+	color:#0000C0;
+	text-decoration:none;
+}
+h1 {
+    font-size: 20pt;
+}
+
+h2 {
+    font-size: 16pt;
+}
+
+h3 {
+    font-size: 12pt;
+}
+
+.header,.header-right {
+	position: relative;
+	margin-bottom:0;
+	margin-top:0;
+	font-family:Trebuchet MS;
+}
+
+.header-right {
+	text-align:right;
+	font-size: 32px;
+}
+
+.title > h1{
+	color: #ffffff;
+	text-align:left;
+	padding-left:18px;
+	padding-top:14px;
+	font-size:32px;
+	font-weight:300;
+	margin-top:0;
+	margin-bottom:0;
+}
+
+.banner {
+	background-image: url("../images/OCA-Banner-Small.webp"); 
+	background-repeat: no-repeat;
+	background-size: cover;
+	height:72px;
+	margin-top:0;
+	margin-bottom: 12px;
+	border-top: solid 4px #50B5AD;
+}
+
+div.main {
+	padding-left:10px;
+}
+
+/* ================== */
+/* Table of Contents  */
+/* ================== */
+
+.tocarea {
+	width:80%;
+	margin:auto;
+	padding-top:12pt;
+	padding-bottom:12pt;	
+	border: 1px solid #000000;
+}
+
+.toctitle {
+	font-size:14pt;
+	font-family:Trebuchet MS;
+	color:#202020;
+	text-align:center;
+	margin-top:0;
+	margin-bottom:12pt;
+}
+
+.tocitems {
+	column-count:3;
+	column-rule: 1px solid #ff0000;
+}
+
+.tocitem {
+	margin-bottom:0;
+	margin-top:0;
+	margin-left:12px;
+	padding-top:0; 
+	padding-bottom:0;
+	font-family:Trebuchet MS;
+	font-size:10pt;
+}
+
+/* ================== */
+/* Tables */
+/* ================== */
+
+th {
+	text-align: left;
+	color: 0;
+	font-weight: 350;
+}
+
+td, th{
+	min-width: 120px;
+	padding: 8px 10px;
+}
+
+table.tight {
+	line-height:1.2em;
+}
+
+td.auth {
+	padding-top:0;
+	padding-bottom: 10px;
+	font-family: Trebuchet MS;
+}
+
+/* ================== */
+/* General spacing */
+/* ================== */
+
+.loose {
+	margin-bottom:6pt;
+	margin-top:0
+}
+
+.looser {
+	margin-bottom:12pt;
+	margin-top:0
+}
+
+.tight {
+	margin-bottom:3pt;
+	margin-top:0
+}
+
+.tighter {
+	margin-bottom:0;
+	margin-top:0;
+}
+
+table.nosp {
+	border-collapse:collapse;
+}
+.nosp {
+	margin-bottom:0;
+	margin-top:0;
+	padding-top:0; 
+	padding-bottom:0;
+}
+
+.tdTightTop {
+	padding-bottom: 0;
+	padding-top: 0;
+	padding-left: 0;
+	padding-right: 6pt;
+	vertical-align:top;
+	font-size:1.0em;
+}
+
+.tdLooseTop {
+	padding-bottom: 3pt;
+	padding-top: 3pt;
+	padding-left: 0;
+	padding-right: 6pt;
+	vertical-align:top;
+	font-size:1.0em;
+}
+
+/* ================== */
+/* various */
+/* ================== */
+
+.code {
+	margin-top:0;
+	margin-bottom: 0;
+	font-family:Rockwell BQ,Rockwell,Comic sans MS;
+	font-size: 10.75pt;
+	color:#0000A0;
+	line-height: 1em;
+}
+
+.in {
+	margin-left:1.5em;
+}
+
+hr {
+	border-top: 1px solid #000000;
+	margin-top:18px;
+}
+
+li {
+	margin-bottom: 6pt;
+}
+
+img {
+		align:center;
+		max-width: 100%;
+		max-height: 100%;
+		display: block;
+		margin: auto;
+		page-break-after:avoid;
+}
+
+.inlinehdr {
+	font-family: Trebuchet MS;
+	font-weight:900;
+	color:#000060;
+}
+
+.caption {
+	font-family: Trebuchet MS;
+	font-size: 12pt;
+	margin:0;
+	padding-top:6pt;
+	padding-bottom: 12pt;
+	page-break-before:avoid;
+}
+
+.copyright {
+	font-family: Trebuchet MS;
+	font-size:9pt;
+	color:#404040;
+	text-align:right;
+	padding-top:18pt;
+	padding-bottom:0;
+	margin:0;
+}
+/* ================== */
+/* Table of standards */
+/* ================== */
+
+.stdhdr, .std {
+	padding-top:0;
+	padding-bottom:3pt;
+	padding-left:3pt;
+	padding-right:0;
+	margin:0;
+	line-height:1.1em;
+	min-width:0;
+}
+
+.stdhdr {
+	font-family: Trebuchet MS;
+	font-weight: bold;
+}
+
+.stdhr {
+	border-top: 1px solid #000000;
+	margin:0;
+	padding:0;
+}
+
+/* ========== */
+/*  Printing  */
+/* ========== */
+
+@media print {
+	widows: 3;
+	orphans: 3;
+	
+	@page {
+		size: auto;
+    margin-top: 0
+		margin-bottom: 0.75in;
+		margin-left: 0.75in; 
+		margin-right: 0.75in;
+		padding: 0;
+  }
+	
+	.banner {
+			background-image:none;
+			height:64px;
+			margin-top:0;
+			margin-bottom: 0;
+			margin-left:0;
+			padding:0;
+			border-top: solid 1px #000000;
+			color:#000000;
+	}
+	
+	.title > h1{
+    color: #000000;
+		margin-top:0;
+	}
+	
+	.tocarea {
+		width:100%;
+	}
+	
+	td.auth {
+		padding-top:0;
+		padding-bottom: 18pt;
+	}
+	
+	a:link, a:visited {
+		color:#000000;
+		text-decoration:none;
+	}
+	
+	.newpage {
+		page-break-before: always;
+	}
+}
