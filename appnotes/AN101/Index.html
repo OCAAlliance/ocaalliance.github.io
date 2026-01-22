@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
 		<meta charset="UTF-8">
-		<title>OcaBlock Deep Dive</title>
+		<title> AES70 Blocks</title>
 		<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab" rel="stylesheet">		
     <link rel=stylesheet type='text/css' href='../css/appnote.css'>
   </head>
@@ -27,7 +28,7 @@
 		</table>
 		<div class='banner'>
 			<div class='title'>
-				<h1>AN101: OcaBlock Deep Dive</h1>
+				<h1>AN101:  AES70 Blocks</h1>
 			</div>
 		</div>	
 		<table width='100%'>
@@ -35,13 +36,979 @@
 				<td class='auth'> 
 					Jeff Berryman | <a href='mailto: veezeronline@gmail.com'> veezeronline@gmail.com</a>
 				</td>
-				<td  class='auth' style="text-align:right"> 2026.01.15 </td>
+				<td  class='auth' style="text-align:right"> 2026.01.21 </td>
 			</tr>
 		</table>		
 
+		<div class="main">	
 
-<h2> Under construction </h2>		
+		<div class='tocarea'>
+			<p class='toctitle'>Contents</p>
+			<div class='tocitems'  style='column-count:2'>
+				<p class='tocitem'>
+					<a href='#Introduction'>Introduction </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Features'>Features </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#OcaBlock and OcaBlockFactory Properties and Methods'>OcaBlock and OcaBlockFactory Properties and Methods </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Action object enumeration and searching'>Action object enumeration and searching </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Dataset object enumeration and searching'>Dataset object enumeration and searching </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Configurability options'>Configurability options </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Action object creation and deletion'>Action object creation and deletion </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Dataset object creation and deletion'>Dataset object creation and deletion </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Signal Flow Control'>Signal Flow Control </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Hierarchical object naming (the Rolepath feature)'>Hierarchical object naming (the Rolepath feature) </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Stored parameter support'>Stored parameter support </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Reusable Block support'>Reusable Block support </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Configurable Blocks'>Configurable Blocks </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Signal Flow Control'>Signal Flow Control </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Ports'>Ports </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Signal Paths'>Signal Paths </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Uses of Signal Paths'>Uses of Signal Paths </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Clocking'>Clocking </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Reusable Blocks'>Reusable Blocks </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#Block Factories'>Block Factories </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#References'>References </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#AES Standards'>AES Standards </a>
+				</p>
+			</div>
+		</div>
 
+	<h1 id='Introduction'>Introduction</h1>
+
+<p>
+	AES70 defines a nestable container class named <span class='code'>OcaBlock</span>  that's useful for organizing control objects 
+	into meaningful groups and subgroups. 
+	For example, here's part of an AES70-controllable audio device.  
+	The picture shows two channels, each with a gain control, a mute function, and a three-band equalizer.  
+	Each channel is contained in its own <span class='code'>OcaBlock</span>  instance ("Block").  
+	As well, the equalizer is defined as a Block that's instantiated inside each channel Block.
+</p>
+
+			<div align='center'>
+				<img src='images/nesting.jpg' alt='Nested Blocks'>
+				<p class='caption'>Nested Blocks</p>
+			</div>
+
+<p>
+	A detailed description of the Block feature is in the "Blocks" clause of the AES70-1 standard.
+	Formal definitions of <span class='code'>OcaBlock</span>  and a related class <span class='code'>OcaBlockFactory</span>  are in Annex A of the AES70-2 standard,
+	the UML specification of the AES70 class tree.
+</p>
+
+	<h1 id='Features'>Features</h1>
+
+	Blocks can contain two kinds of objects:
+	<ul>
+		<li>
+			<span class='inlinehdr'>Action objects</span>.
+			Objects that perform control and/or monitoring functions, or affect the flow of control.
+		</li>
+		<li>
+			<span class='inlinehdr'>Dataset objects</span>.
+			Objects that give controllers access to data stored in the Device.
+		</li>
+	</ul>
+
+	<p>
+		The AES70 Block feature offers a rich set of optional features, 
+		not just simple object containment.  They are:
+	</p>
+
+	<ol>
+		<li>
+			<span class='inlinehdr'>Action object enumeration and searching</span>.
+			A controller can query a Block to discover the action objects it contains.  Various search functions are available, to allow search for  specific action objects by name or role.  
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Dataset object enumeration and searching</span>.
+			A controller can query a Block to discover the dataset objects it contains.  Various search functions are available, to allow search for  specific dataset objects by name or role.
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Configurability options</span>.
+			The object population of a Block may be defined at time of device manufacture, or,
+			for software-based devices, by controllers at run time.  
+			For configurable devices, controllers can even create and delete whole blocks.  
+			<span class='code'>OcaBlock</span>  offers configuration options to cover all the cases.
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Action object creation and deletion</span>.
+			For sufficiently configurable Blocks, a controller can add action objects to a Block, or delete them from a Block.
+		</li>
+		
+		<li>
+			<span class='inlinehdr'>Dataset object creation and deletion</span>.
+			For sufficiently Configurable Blocks, a controller can add dataset objects to a Block, or delete them from a Block.
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Signal path modeling and control</span>.
+			For sufficiently Configurable Blocks, a controller can add, change, and delete signal paths inside a Block.
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Hierarchical object naming (the <i>Rolepath</i> feature)</span>.
+			The Rolepath feature allows identifying objects uniquely by hierarchical names, 
+			much as files are identified in a hierarchical file system.
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Stored parameter support</span>.
+			This feature allows controllers to identify standard modules (Blocks with known schemas)
+			within a device, and to re-use code blocks already written for those modules.
+		</li>
+
+		<li>
+			<span class='inlinehdr'>Automated Block creation</span>.
+			For configurable Devices, AES70 defines the <span class='code'>OcaBlockFactory</span>  class. 
+			<span class='code'>OcaBlockFactory</span>  objects allow a controller, using a single command, 
+			to cause the Device to construct a given Block, including its particular objects.
+		</li>
+	</ol>
+
+		<h1 id='OcaBlock and OcaBlockFactory Properties and Methods'>OcaBlock and OcaBlockFactory Properties and Methods</h1>
+	<p>
+		AES70's Block features are realized by the properties and methods of <span class='code'>OcaBlock</span>  
+		and in a few cases by <span class='code'>OcaBlockFactory</span> .  
+		Below is a list of those properties and methods, organized by feature.  
+		In the list:
+	</p>
+
+	<ul>
+		<li>	In the Type column, <b>P</b> denotes a property, <b>M</b> denotes a method.</li>
+		<li>	The Definition column is given in C-like pseudocode.</li>
+		<li>	Unless otherwise noted, the properties and methods belong to <span class='code'>OcaBlock</span> .</li>
+		<li>	Detailed method signatures are omitted for readability.</li>
+	</ul>
+
+	<p>
+		Complete details of <span class='code'>OcaBlock</span>  and <span class='code'>OcaBlockFactory</span>  are in the formal UML specification 
+		accessible from Annex A of the AES70-2 standard.
+	</p>
+
+		<h2 id='Action object enumeration and searching' class='nospBelow'>Action object enumeration and searching</h2>
+
+	<p class='tightTop'>
+		See application note 	<a href='https://ocaalliance.github.io/appnotes/AN100/Index.html'>
+		AN100, "Designing an AES70 Device"
+	</a>
+, for details on object identification, including Object Numbers, Roles, Rolepaths, and Labels.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+			<tr>
+		<td colspan=3 class='subhead'>Enumeration</td>
+	<tr>
+				<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>ActionObjects</span> </td>
+		<td class='tightul'>
+			Collection of identifiers of Action Objects in the Block
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetActionObjects(..)</span> </td>
+		<td class='tightul'>
+			Returns list of Action Objects in the Block
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetActionObjectsRecursive(..)</span> </td>
+		<td class='tightul'>
+			Returns list of Action Objects in the Block and all the Blocks it contains, down to the lowest nesting level.
+		</td>
+	</tr>
+			<tr>
+		<td colspan=3 class='subhead'>Searching</td>
+	<tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>FindActionObjectsByRole(..)</span> </td>
+		<td class='tightul'>
+			Finds all Action Objects in the Block that have the given Role name and Class ID.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>FindActionObjectsByRoleRecursive(..)</span> </td>
+		<td class='tightul'>
+			Same as previous, except searches in all contained Blocks as well.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Dataset object enumeration and searching' class='nospBelow'>Dataset object enumeration and searching</h2>
+
+	<p class='tightTop'>
+		See application note 	<a href='https://ocaalliance.github.io/appnotes/AN105/Index.html'>
+		AN105, "Datasets"
+	</a>
+ for more information.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+			<tr>
+		<td colspan=3 class='subhead'>Enumeration</td>
+	<tr>
+				<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>DatasetObjects</span> </td>
+		<td class='tightul'>
+			List of identifiers of Action Objects in the Block.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetDatasetObjects(..)</span> </td>
+		<td class='tightul'>
+			Returns list of Dataset Objects in the Block
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetDatasetObjectsRecursive()</span> </td>
+		<td class='tightul'>
+			Returns list of Dataset Objects in the Block and all the Blocks it contains, down to the lowest nesting level.
+		</td>
+	</tr>
+			<tr>
+		<td colspan=3 class='subhead'>Searching</td>
+	<tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>FindDatasetObjectsByRole()</span> </td>
+		<td class='tightul'>
+			Finds all Dataset Objects in the Block that have the given name and/or MIME type.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>FindDatasetsRecursive</span> </td>
+		<td class='tightul'>
+			Same as previous, except searches in all contained Blocks as well.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Configurability options' class='nospBelow'>Configurability options</h2>
+
+	<p class='tightTop'>
+		See Configurable Blocks below.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+			<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>Configurability</span> </td>
+		<td class='tightul'>
+			Bitstring specifying the Block's configurability at run time.<br />			Bit 0: 1 if Action Objects can be created/deleted.<br />			Bit 1: 1 if Signal Paths can be created/deleted.<br />			Bit 2: 1 if Dataset Objects can be created/deleted.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Action object creation and deletion' class='nospBelow'>Action object creation and deletion</h2>
+
+	<p class='tightTop'>
+		See Configurable Blocks below.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>ConstructActionObject(..)</span> </td>
+		<td class='tightul'>
+			Adds a new Action Object to the Block
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>DeleteMember(..)</span> </td>
+		<td class='tightul'>
+			Deletes an Action Object or a Database Object from the Block
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Dataset object creation and deletion' class='nospBelow'>Dataset object creation and deletion</h2>
+
+	<p class='tightTop'>
+		See application note 	<a href='https://ocaalliance.github.io/appnotes/AN105/Index.html'>
+		AN105, "Datasets"
+	</a>
+ for details.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>ConstructDataset(..)</span> </td>
+		<td class='tightul'>
+			Adds a new Dataset Object to the Block
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>DuplicateDataset(..)</span> </td>
+		<td class='tightul'>
+			Creates a copy of a Dataset Object in the Block, and adds this copy to the Block
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>DeleteMember(..)</span> </td>
+		<td class='tightul'>
+			Deletes an Action Object or a Database Object from the Block
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Signal Flow Control' class='nospBelow'>Signal Flow Control</h2>
+
+	<p class='tightTop'>
+		See Signal Flow Control below.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+				<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>SignalPaths</span> </td>
+		<td class='tightul'>
+			Collection of Signal Paths between Action Objects in the Block
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetSignalPaths(..)</span> </td>
+		<td class='tightul'>
+			Returns list of all Signal Paths in the Block
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetSignalPathsRecursive(..)</span> </td>
+		<td class='tightul'>
+			Returns list of Signal Paths in the Block and all the Blocks it contains, down to the lowest nesting level.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>AddSignalPath(..)</span> </td>
+		<td class='tightul'>
+			Adds a new Signal Path to the Block.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>DeleteSignalPath(..)</span> </td>
+		<td class='tightul'>
+			Deletes a Signal Path from the Block.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Hierarchical object naming (the Rolepath feature)' class='nospBelow'>Hierarchical object naming (the Rolepath feature)</h2>
+
+	<p class='tightTop'>
+		See application note 	<a href='https://ocaalliance.github.io/appnotes/AN100/Index.html'>
+		AN100, "Designing an AES70 Device"
+	</a>
+ for more information about this feature.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>FindActionObjectsByRolePath(..)</span> </td>
+		<td class='tightul'>
+			Finds Action Objects with the given Rolepath
+		</td>
+	</tr>
+		</table>
+	
+<p>The following property and method are inherited from <span class='code'>OcaRoot</span> , the AES70 base class:</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+				<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>Role</span> </td>
+		<td class='tightul'>
+			The object's Role.  For the $code('OcaBlock') object, the value is the Role of the Block itself.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetRole(..)</span> </td>
+		<td class='tightul'>
+			Returns the value of the $code('Role') property.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Stored parameter support' class='nospBelow'>Stored parameter support</h2>
+
+	<p class='tightTop'>
+		"Stored parameter support" refers to what is sometimes called "preset", "scene", or "cue" support: 
+		the ability to save sets of parameter values inside a device for quick recall when needed.
+		See application note 	<a href='https://ocaalliance.github.io/appnotes/AN112/Index.html'>
+		AN112, "Stored Parameters"
+	</a>
+ for a full description of the AES70 stored parameter feature.  Also see application note 	<a href='https://ocaalliance.github.io/appnotes/AN105/Index.html'>
+		AN105, "Datasets"
+	</a>
+ for details on Datasets.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+			<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>MostRecentParamDatasetONo</span> </td>
+		<td class='tightul'>
+			Object number of the parameter Dataset that was most recently applied to this Block.
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetMostRecentParamDatasetONo(..)</span> </td>
+		<td class='tightul'>
+			Returns the value of property MostRecentParamDatasetONo.
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>ApplyParamDataset(..)</span> </td>
+		<td class='tightul'>
+			Applies the specified parameter Dataset to this Block.
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>StoreCurrentParameterData(...)</span> </td>
+		<td class='tightul'>
+			Stores the values of all the properties of all the objects in the Block into a given Dataset.
+		</td>
+	</tr>
+			<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>FetchCurrentParameterData(..)</span> </td>
+		<td class='tightul'>
+			Returns the values of all the properties of all the objects in the Block in a single binary data element with an application-specific format.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Reusable Block support' class='nospBelow'>Reusable Block support</h2>
+
+	<p class='tightTop'>
+		See Reusable Blocks below for more detail.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+				<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>GlobalType</span> </td>
+		<td class='tightul'>
+			The Block's Global Type identifier, a globally unique value that uniquely identifies this Block's configuration.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetGlobalType</span> </td>
+		<td class='tightul'>
+			Returns the value of property GlobalType.
+		</td>
+	</tr>
+		</table>
+
+	<h2 id='Automated Block creation' class='nospBelow'>Automated Block creation</h2>
+
+	<p class='tightTop'>
+		See Block Factories below for more detail.
+	</p>
+
+		<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+				<tr>
+		<td class='tightul' align='center'><b>P</b></td>
+		<td class='tightul'><span class='code'>BlockFactoryONo</span> </td>
+		<td class='tightul'>
+			Object number of Block Factory object that created this Block, or zero if the Block wasn't created by a Block Factory.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>GetBlockFactoryONo(..)</span> </td>
+		<td class='tightul'>
+			Returns the value of property MostRecentParamDatasetONo.
+		</td>
+	</tr>
+				<tr>
+		<td class='tightul' align='center'><b>M</b></td>
+		<td class='tightul'><span class='code'>ConstructBlockUsingFactory(..)</span> </td>
+		<td class='tightul'>
+			Using the designated Block Factory object, constructs a new Block, with all its contained objects, and adds it to the current Block.
+		</td>
+	</tr>
+		</table>
+
+		<h1 id='Configurable Blocks'>Configurable Blocks</h1>
+
+	<p>
+		Certain DSP-based signal processing devices allow controllers to create and delete Blocks 
+		and objects within them at run time.
+		To support this, AES70 defines three kinds of Block configurability:
+	</p>
+
+	<ol>
+		<li>	Controllers may create and delete Action Objects.</li>
+		<li>	Controllers may create, update, and change Signal Paths.</li>
+		<li>	Controllers may create and delete Dataset Objects.</li>
+	</ol>
+
+	<p>
+		A Block's configurability is indicated by the value of the property <span class='code'>OcaBlock.Configurability</span> >.
+		This property is a set of three bit flags:
+	</p>
+
+	<ul class='nosp'>
+		<li>	Bit 0: 	1 if Action Objects can be created/deleted.</li>
+		<li>	Bit 1: 	1 if Signal Paths can be created/deleted.</li>
+		<li>	Bit 2: 	1 if Dataset Objects can be created/deleted.</li>
+	</ul>
+
+	<p>
+		The value of <span class='code'>Configurability</span>  determines which object population management methods the Block supports.  
+		For example:
+	</p>
+
+	<ul>
+		<li>
+			If bit 0 is zero, then the <span class='code'>OcaBlock</span>  methods <span class='code'>ConstructActionObject(..)</span>  
+			and <span class='code'>ConstructActionObjectUsingFactory(..)</span>  
+			will return a NotImplemented status if called.  
+		</li>
+
+		<li>
+			If bit 2 is zero, then the methods <span class='code'>ConstructDataset(..)</span>  and <span class='code'>DuplicateDataset(..)</span>  	
+			will return a NotImplemented status if called.
+		</li>
+
+		<li>
+			If both bit 0 and bit 2 are zero, then the method <span class='code'>DeleteMember(..)</span>  
+			will return a NotImplemented status if called.
+		</li>
+	</ul>
+
+	<p>
+		Configurability is not inherited by contained Blocks.  
+		For example, a Block that allows creation and deletion of Action Objects may contain 
+		nonconfigurable Blocks, and vice versa.
+	</p>
+
+	<h1 id='Signal Flow Control' class='newpage'>Signal Flow Control</h1>
+
+	<p>
+		The AES70 Signal Flow Control feature allows Controllers to discover and, in some cases, modify signal flows among processing elements inside a Block and among Blocks.
+	</p>
+
+	<h2 id='Ports'>Ports</h2>
+
+	<p>
+		For defining Signal Flows, Action Objects with signal processing functions can have Ports. 
+		A Port is a software element that describes an input or output signal of the processing function 
+		an Action Object controls. 
+		<i><b>Input Ports</b></i> represent signal flows into the processing function; 
+		<i><b>Output Ports</b></i> represent signal flows out of the processing function. 
+	</p>
+	
+	<p>
+		An Action Objectcontrols or monitors a signal processing function is called a <i><b>Worker</b></i>.  
+		A Worker can have any number of Ports.  
+	</p>
+	
+	<p>
+		A Block that contains Workers is itself a Worker and can have Ports of its own, called Block Ports.  
+		Block Ports behave slightly differently from other Action Object Ports, as will be explained below.
+	</p>
+	
+	<h2 id='Signal Paths'>Signal Paths</h2>
+
+	<p>
+		A Signal Path is an internal connection from:
+	</p>
+
+	<ul class='tight'>
+		<li>A Worker's Output Port to a Worker's Input Port, or </li>
+		<li>A Block Input Port to a Worker's Input Port, or </li>
+		<li>A Worker's Output Port to a Block Output Port. </li>
+	</ul>
+
+<p>&nbsp;</p>
+
+			<div align='center'>
+				<img src='images/signal-paths.jpg' alt='Signal paths'>
+				<p class='caption'>Signal paths</p>
+			</div>
+
+	<p>
+		The illustration shows the purpose of Block Ports.  
+		A Block port is a signal portal from the inside to the outside of the Block.  
+		It is possible to define a signal path directly into a Block from the outside 
+		(see the path marked with an * in the picture), in most cases it's cleaner to use Block Ports 
+		for signals that pass between Blocks.
+	</p>
+
+	<h2 id='Uses of Signal Paths'>Uses of Signal Paths</h2>
+
+	<p>
+		Signal Flow Control is an optional feature.  It will normally be useful in the following cases:
+	</p>
+
+	<ol class='tight'>
+		<li>Non-Configurable Blocks whose signal flows need to be visible to controllers, perhaps for display purposes.
+		<li>Blocks whose signal flows can be configured by controllers at run time.
+		<li>Blocks that allow creation and deletion of Action Objects at run time.
+	</ol>
+
+	<p>
+		In case (1), the Block's signal flow property <span class='code'>OcaBlock.SignalFlow</span>  will be read-only.  
+		In cases (2) and (3), it will be read-write.
+	</p>
+
+	<h2 id='Clocking'>Clocking</h2>
+
+	<p>
+		When a device has multiple internal sample clocks, a controllers might need to manage the allocation of clocks to Ports.  
+		The AES70 datatype <span class='code'>OcaPort</span> , which defines the Port descriptor, 
+		supports this by storing the Object Number of the associated <span class='code'>OcaMediaClock3</span>  object.  
+		See application note 	<a href='https://ocaalliance.github.io/appnotes/AN113/Index.html'>
+		AN113, "Timing and Clocks"
+	</a>
+ for full details.
+	</p>
+
+	<h1 id='Reusable Blocks'>Reusable Blocks</h1>
+
+	<p>
+		The configuration of objects inside a Block is called a <i><b>Block Schema</b></i>, or just <i><b>Schema</b></i>.  
+	</p>
+	
+	<p>
+		If you're creating a line of AES70-controlled products, you'll probably have a number of Blocks 
+		that have the same schema in multiple products.  
+		For example, the three-band equalizer shown in the examples above might occur in various products.
+	</p>
+
+	<p>
+		To help manage the re-use of schemas, <span class='code'>OcaBlock</span>  provides the property <span class='code'>GlobalType</span> .
+		<span class='code'>GlobalType</span>  uniquely identifies the schema globally.  
+		Its value is the combination of an originator's organization ID (see below) and a unique number chosen by that organization.
+	</p>
+
+	<p>
+		<span class='code'>GlobalType</span>  has three benefits:
+	</p>
+
+	<ol class='tight'>
+		<li>
+			It allows controllers to identify standard modules (Blocks with known schemas) within a device, 
+			and to re-use code blocks already written for those modules.
+		</li>
+
+		<li>
+			It helps organize reusable schemas into both private and public libraries. 
+		</li>
+
+		<li>
+			It supports open sharing of schemas across manufacturers.
+		</li>
+	</ol>
+
+	<p>
+		The format of <span class='code'>GlobalType</span>  is defined by the AES70 datatype <span class='code'>OcaGlobalTypeIdentifier</span> , 
+		and is as follows (c-style pseudocode):
+	</p>
+
+	<div class='in'>
+		<span class='code'>
+			struct OcaGlobalTypeIdentifier {<br />
+			<div class='in'>
+				<p class='nosp'>	OcaOrganizationID  Organization;</p>
+				<p class='nosp'>	OcaUint32 ID;</p>
+			</div>
+			}
+		</span>
+
+		<p>
+			where <span class='code'>Organization</span>  is a 24-bit IEEE 
+			<a href='https://en.wikipedia.org/wiki/Organizationally_unique_identifier'>
+				OUI (Organization Unique ID)
+			</a>
+			or
+			<a href='https://standards.ieee.org/products-programs/regauth/cid/'>
+				CID (Company ID)
+			</a>
+			and <span class='code'>ID</span>  may be freely chosen by the identified organization.
+		</p>
+
+	<h1 id='Block Factories'>Block Factories</h1>
+	<p>
+		In some reconfigurable devices, Blocks with the same Schema may be instantiated and deleted many times while running.  
+		To avoid the need for controllers to build each such Block object-by-object, 
+		AES70 defines the <span class='code'>OcaBlockFactory</span>  class, whose instances can create specific, fully-populated 
+		Blocks with a single call. 
+	</p>
+
+	<p>
+		A <span class='code'>OcaBlockFactory</span>  object ("Block Factory") is configured to construct a Block with a given schema. 
+		For example, to use Block Factory <span class='code'>F1</span>  for constructing a new Block inside a parent Block <span class='code'>B1</span> , 
+		a controller calls <span class='code'>B1</span> 's method <span class='code'>ConstructBlockUsingFactory(..)</span> , 
+		identifying <span class='code'>F1</span>  as the factory to use.  
+		The result is a new Block <span class='code'>B2</span>  inside <span class='code'>B1</span> , completely populated according to the given schema.
+	</p>
+
+	<p>
+		In operation, a Block Factory a set of <i><b>prototypes</b></i> that represent the members and signal paths
+		of the Block to be created.  
+		When a controller instigates creation of the block, the prototypes are used as templates to create the actual population.
+	</p>
+
+	<p>
+		Block Factories may be defined at time of device manufacture or, if implementation permits, by controllers at runtime.
+		For the latter case, <span class='code'>OcaBlockFactory</span>  contains a complete set of methods that allow controllers 
+		to define the Factory's prototypes as desired.
+	</p>
+
+	<p>
+		For details, see the standards documents AES70-1, "Block Factories" section, 
+		and the formal class definition in AES70-2 Annex A.
+	</p>
+
+	<h1 id='References' class='newpage'>References</h1>
+
+	<h2 id='AES70 standards'>AES70 standards</h2>
+
+	<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+
+			<table>
+			<colgroup>
+				<col width='72pt'>
+				<col width='72pt'>
+				<col>
+			</colgroup>
+			<tbody>			
+				<tr>
+					<td class='stdhdr'>ID</td>
+					<td class='stdhdr' align='center'>Current Version</td>
+					<td class='stdhdr'>Name</td>
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>
+				<tr>
+					<td class='std'>AES70-1</td>
+					<td class='std' align='center'>2024</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 1: Framework
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-2</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 2: Class structure
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-3</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 3: OCP.1 Binary protocol 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-4</td>
+					<td class='std' align='center'>2026</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 4: OCP.2 JSON-based protocol 
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-21</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 21:  Using AES70 to manage AES67 and SMPTE ST 2110 30 media transport 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-22</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 22: Using AES70 to manage Milan™ media transport
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-23</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture -
+						Part 23: Using AES70 to manage Dante® media transport
+					</td>		
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>				
+			</tbody>
+		</table>
+
+	<p> Copies of these standards are available from the AES Standards Store, 
+		<a href='https://aes2.org/publications/standards-store/'>
+			aes2.org/publications/standards-store.
+		</a>
+	</p>
+
+	<p>
+		AES standards documents are free to AES members.  You're encouraged to join!
+	</p>
 			<p class='copyright'>&copy; OCA Alliance 2026</p>
 		</div>
 	</body>

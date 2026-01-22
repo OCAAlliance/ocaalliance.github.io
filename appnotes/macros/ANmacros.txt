@@ -45,10 +45,10 @@ $macro(payload)
 		<div class="main">	
 $endmacro
 \
-$macro(tocbegin)
+$macro(tocbegin,colcount)
 		<div class='tocarea'>
 			<p class='toctitle'>Contents</p>
-			<div class='tocitems'>
+			<div class='tocitems'  style='column-count:$(colcount)'>
 $endmacro
 \
 $macro(tocitem,level,what)
@@ -94,8 +94,16 @@ $macro(section,level,text)
 	<h$(level) id='$(text)'>$(text)</h$(level)>
 $endmacro
 \
+$macro(section1,level,text)
+	<h$(level) id='$(text)' class='nospBelow'>$(text)</h$(level)>
+$endmacro
+\
 $macro(sectionpage,level,text)
 	<h$(level) id='$(text)' class='newpage'>$(text)</h$(level)>
+$endmacro
+\
+$macro(sectionInline,text)
+<span class='inlinehdr'>$(text)</span>.
 $endmacro
 \
 $macro(standards)
@@ -177,4 +185,42 @@ $macro(standards)
 				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>				
 			</tbody>
 		</table>
+$endmacro
+\
+$macro(obtableBegin)
+	<table class='tight' width='100%'>
+		<col width='24pt'>
+		<col width='25%'>
+		<col>
+		<tr>
+			<th>Type</th>
+			<th>Definition</th>
+			<th>Description</th>
+		</tr>	
+$endmacro
+\
+$macro(obtableEnd)
+	</table>
+$endmacro
+\
+$macro(obmember,T,defn,desc)
+	<tr>
+		<td class='tightul' align='center'><b>$(T)</b></td>
+		<td class='tightul'>$code(defn)</td>
+		<td class='tightul'>
+			$(desc)
+		</td>
+	</tr>
+$endmacro
+\
+$macro(obsubhead,txt)
+	<tr>
+		<td colspan=3 class='subhead'>$(txt)</td>
+	<tr>
+$endmacro
+
+$macro(anref,num,nam)
+	<a href='https://ocaalliance.github.io/appnotes/AN$(num)/Index.html'>
+		AN$(num), "$(nam)"
+	</a>
 $endmacro

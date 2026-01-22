@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
 		<meta charset="UTF-8">
-		<title>Control Grouping</title>
+		<title> AES70 Control Grouping </title>
 		<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab" rel="stylesheet">		
     <link rel=stylesheet type='text/css' href='../css/appnote.css'>
   </head>
@@ -27,7 +27,7 @@
 		</table>
 		<div class='banner'>
 			<div class='title'>
-				<h1>AN102: Control Grouping</h1>
+				<h1>AN102:  AES70 Control Grouping </h1>
 			</div>
 		</div>	
 		<table width='100%'>
@@ -39,10 +39,203 @@
 			</tr>
 		</table>		
 
+		<div class="main">	
 
-<h2> Under construction </h2>		
+		<div class='tocarea'>
+			<p class='toctitle'>Contents</p>
+			<div class='tocitems'  style='column-count:1'>
+				<p class='tocitem'>
+					<a href='#Introduction'>Introduction </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#The OcaGroup Class'>The OcaGroup Class </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Control Groups and OcaBlocks'>Control Groups and OcaBlocks </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#Definitions'>Definitions </a>
+				</p>
+				<p class='tocitem'>
+					<a href='#References'>References </a>
+				</p>
+				<p class='tocitem'>
+					&nbsp;&nbsp;&nbsp;<a href='#AES Standards'>AES Standards </a>
+				</p>
+			</div>
+		</div>
 
-			<p class='copyright'>&copy; OCA Alliance 2026</p>
+
+			<h1 id='Introduction'>Introduction</h1>
+		<p>
+			This application note describes AES70"s scheme for control grouping - 
+			using one control to affect multiple parameters, as in 
+			mastering, submastering, and so on.
+		</p>
+		
+			<h1 id='The OcaGroup Class'>The OcaGroup Class</h1>
+		<p>
+			The new class <span class='code'>OcaGroup</span>  in AES70-2024 gives developers an easy to use way of 
+			defining control groups for master and submaster gain and EQ controls, 
+			mute groups, solo functions, and other interesting functions 
+			involving multiple control objects.   
+			It replaces an older class <span class='code'>OcaGrouper</span> , which was more difficult to use.
+		</p>
+		
+		<p>
+			An <span class='code'>OcaGroup</span>  control group is a list of objects ("members"). 
+			Changes to the group"s settings affect the settings of all its members.  
+			The exact relationship between group settings and member settings 
+			depends on a rule called the <i><b>Aggregation Rule</b></i> and will vary, 
+			depending on what kinds of objects are grouped.
+		</p>
+		
+		<ul>
+			<li>
+				<span class="inlinehdr">Example 1 - Master mute.</span>  
+				Group members are <span class='code'>OcaMute</span>  objects.  
+				Muting the group mutes all the individual objects, 
+				unmuting the group unmutes all the individual objects.
+			</li>
+			<li>
+				<span class="inlinehdr">Example 2 - Virtual VCA master. </span>
+				Group members are <span class='code'>OcaGain</span>  objects.  
+				The group gain setting is added to the individual gain settings.
+			</li>
+		</ul>
+		
+			<h2 id='Control Groups and OcaBlocks'>Control Groups and OcaBlocks</h2>
+		
+		<p>
+			Many devices use <span class='code'>OcaBlock</span>  objects to organize their control structures  - 
+			see application notes 
+			<a href="../AN100/index.html">
+				AN100:Designing an AES70 Device
+			</a>for an overview of this technique, and
+			<a href="..\AN101\index.html">
+				AN101: OcaBlock Deep Dive
+			</a>
+			for more details on <span class='code'>OcaBlock</span> .  
+		</p>
+		<p>
+			It"s important to realize that <span class='code'>OcaGroup</span>  control group membership is 
+			independent of a device"s block structure.
+			The members of a given control group can belong to various blocks.
+			If you"re familiar with conventional mixing console architecture, 
+			you can think of AES70 control groups as functionally equivalent to VCA masters.
+		</p>
+		
+		<p>
+			Here"s a multichannel mixer example showing these relationships.
+		</p>
+
+					<div align='center'>
+				<img src='images/mixer control group.jpg' alt='Example AES70 control group'>
+				<p class='caption'>Example AES70 control group</p>
+			</div>
+		
+			<h2 id='Definitions'>Definitions</h2>
+		
+		<p>
+			The official description of AES70 control groups is in the AES70-1 standard, 
+			and the normative definition of the <span class='code'>OcaGroup</span>  class is in the AES70 class definitions 
+			in AES70-2, Annex A.
+		</p>
+		
+			<h1 id='References' class='newpage'>References</h1>
+			<h2 id='AES70 standards'>AES70 standards</h2>
+			<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+			
+					<table>
+			<colgroup>
+				<col width='72pt'>
+				<col width='72pt'>
+				<col>
+			</colgroup>
+			<tbody>			
+				<tr>
+					<td class='stdhdr'>ID</td>
+					<td class='stdhdr' align='center'>Current Version</td>
+					<td class='stdhdr'>Name</td>
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>
+				<tr>
+					<td class='std'>AES70-1</td>
+					<td class='std' align='center'>2024</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 1: Framework
+					</td>
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-2</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 2: Class structure
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-3</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 3: OCP.1 Binary protocol 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-4</td>
+					<td class='std' align='center'>2026</td>
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 4: OCP.2 JSON-based protocol 
+					</td>		
+				</tr>
+				
+				<tr>
+					<td class='std'>AES70-21</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 21:  Using AES70 to manage AES67 and SMPTE ST 2110 30 media transport 
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-22</td>
+					<td class='std' align='center'>2024</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture - 
+						Part 22: Using AES70 to manage Milan™ media transport
+					</td>		
+				</tr>
+
+				<tr>
+					<td class='std'>AES70-23</td>
+					<td class='std' align='center'>2026</td>		
+					<td class='std'>
+						AES standard for audio applications of networks - Open Control Architecture -
+						Part 23: Using AES70 to manage Dante® media transport
+					</td>		
+				</tr>
+				<tr><td colspan=3 class='stdhdr'><hr class='stdhr'></td></tr>				
+			</tbody>
+		</table>
+			
+			<p> Copies of these standards are available from the AES Standards Store, 
+				<a href="https://aes2.org/publications/standards-store/">
+					aes2.org/publications/standards-store.
+				</a>
+			</p>
+			
+			<p>
+				AES standards documents are free to AES members.  You"re encouraged to join!
+			</p>
+			
+			<p class='copyright'>&copy; OCA Alliance copyright year</p>
 		</div>
 	</body>
 </html>

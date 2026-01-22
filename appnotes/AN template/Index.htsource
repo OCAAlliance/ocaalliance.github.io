@@ -2,7 +2,7 @@ $top("AN100"," Designing an AES70 Device ","2026.01.08","Jeff Berryman"," veezer
 
 $payload()
 
-$tocbegin()
+$tocbegin(3)
 $tocitem(1,"Introduction")
 $tocitem(1,"Choosing AES70 objects")
 $tocitem(2,"Managers")

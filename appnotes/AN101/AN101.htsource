@@ -1,0 +1,521 @@
+$top("AN101"," AES70 Blocks","2026.01.21","Jeff Berryman"," veezeronline@gmail.com")
+
+$payload()
+
+$tocbegin(2)
+$tocitem(1,"Introduction")
+$tocitem(1,"Features")
+$tocitem(1,"OcaBlock and OcaBlockFactory Properties and Methods")
+$tocitem(2,"Action object enumeration and searching")
+$tocitem(2,"Dataset object enumeration and searching")
+$tocitem(2,"Configurability options")
+$tocitem(2,"Action object creation and deletion")
+$tocitem(2,"Dataset object creation and deletion")
+$tocitem(2,"Signal Flow Control")
+$tocitem(2,"Hierarchical object naming (the Rolepath feature)")
+$tocitem(2,"Stored parameter support")
+$tocitem(2,"Reusable Block support")
+$tocitem(1,"Configurable Blocks")
+$tocitem(1,"Signal Flow Control")
+$tocitem(2,"Ports")
+$tocitem(2,"Signal Paths")
+$tocitem(2,"Uses of Signal Paths")
+$tocitem(2,"Clocking")
+$tocitem(1,"Reusable Blocks")
+$tocitem(1,"Block Factories")
+$tocitem(1,"References")
+$tocitem(2,"AES Standards")
+$tocend()
+
+$section(1,"Introduction")
+
+<p>
+	AES70 defines a nestable container class named $code("OcaBlock") that's useful for organizing control objects 
+	into meaningful groups and subgroups. 
+	For example, here's part of an AES70-controllable audio device.  
+	The picture shows two channels, each with a gain control, a mute function, and a three-band equalizer.  
+	Each channel is contained in its own $code("OcaBlock") instance ("Block").  
+	As well, the equalizer is defined as a Block that's instantiated inside each channel Block.
+</p>
+
+$pic("images/nesting.jpg","Nested Blocks")
+
+<p>
+	A detailed description of the Block feature is in the "Blocks" clause of the AES70-1 standard.
+	Formal definitions of $code("OcaBlock") and a related class $code('OcaBlockFactory') are in Annex A of the AES70-2 standard,
+	the UML specification of the AES70 class tree.
+</p>
+
+$section(1,"Features")
+
+	Blocks can contain two kinds of objects:
+	<ul>
+		<li>
+			$sectionInline("Action objects")
+			Objects that perform control and/or monitoring functions, or affect the flow of control.
+		</li>
+		<li>
+			$sectionInline("Dataset objects")
+			Objects that give controllers access to data stored in the Device.
+		</li>
+	</ul>
+
+	<p>
+		The AES70 Block feature offers a rich set of optional features, 
+		not just simple object containment.  They are:
+	</p>
+
+	<ol>
+		<li>
+			$sectionInline("Action object enumeration and searching")
+			A controller can query a Block to discover the action objects it contains.  Various search functions are available, to allow search for  specific action objects by name or role.  
+		</li>
+
+		<li>
+			$sectionInline("Dataset object enumeration and searching")
+			A controller can query a Block to discover the dataset objects it contains.  Various search functions are available, to allow search for  specific dataset objects by name or role.
+		</li>
+
+		<li>
+			$sectionInline("Configurability options")
+			The object population of a Block may be defined at time of device manufacture, or,
+			for software-based devices, by controllers at run time.  
+			For configurable devices, controllers can even create and delete whole blocks.  
+			$code("OcaBlock") offers configuration options to cover all the cases.
+		</li>
+
+		<li>
+			$sectionInline("Action object creation and deletion")
+			For sufficiently configurable Blocks, a controller can add action objects to a Block, or delete them from a Block.
+		</li>
+		
+		<li>
+			$sectionInline("Dataset object creation and deletion")
+			For sufficiently Configurable Blocks, a controller can add dataset objects to a Block, or delete them from a Block.
+		</li>
+
+		<li>
+			$sectionInline("Signal path modeling and control")
+			For sufficiently Configurable Blocks, a controller can add, change, and delete signal paths inside a Block.
+		</li>
+
+		<li>
+			$sectionInline("Hierarchical object naming (the <i>Rolepath</i> feature)")
+			The Rolepath feature allows identifying objects uniquely by hierarchical names, 
+			much as files are identified in a hierarchical file system.
+		</li>
+
+		<li>
+			$sectionInline("Stored parameter support")
+			This feature allows controllers to identify standard modules (Blocks with known schemas)
+			within a device, and to re-use code blocks already written for those modules.
+		</li>
+
+		<li>
+			$sectionInline("Automated Block creation")
+			For configurable Devices, AES70 defines the $code("OcaBlockFactory") class. 
+			$code("OcaBlockFactory") objects allow a controller, using a single command, 
+			to cause the Device to construct a given Block, including its particular objects.
+		</li>
+	</ol>
+
+	$section(1,"OcaBlock and OcaBlockFactory Properties and Methods")
+	<p>
+		AES70's Block features are realized by the properties and methods of $code("OcaBlock") 
+		and in a few cases by $code("OcaBlockFactory").  
+		Below is a list of those properties and methods, organized by feature.  
+		In the list:
+	</p>
+
+	<ul>
+		<li>	In the Type column, <b>P</b> denotes a property, <b>M</b> denotes a method.</li>
+		<li>	The Definition column is given in C-like pseudocode.</li>
+		<li>	Unless otherwise noted, the properties and methods belong to $code("OcaBlock").</li>
+		<li>	Detailed method signatures are omitted for readability.</li>
+	</ul>
+
+	<p>
+		Complete details of $code("OcaBlock") and $code("OcaBlockFactory") are in the formal UML specification 
+		accessible from Annex A of the AES70-2 standard.
+	</p>
+
+	$section1(2,"Action object enumeration and searching")
+
+	<p class='tightTop'>
+		See application note $anref('100', 'Designing an AES70 Device'), for details on object identification, including Object Numbers, Roles, Rolepaths, and Labels.
+	</p>
+
+	$obtableBegin()
+		$obsubhead("Enumeration")
+			$obmember("P",	"ActionObjects","Collection of identifiers of Action Objects in the Block")
+			$obmember("M",	"GetActionObjects(..)","Returns list of Action Objects in the Block")
+			$obmember("M",	"GetActionObjectsRecursive(..)","Returns list of Action Objects in the Block and all the Blocks it contains, down to the lowest nesting level.")
+		$obsubhead("Searching")
+			$obmember("M",	"FindActionObjectsByRole(..)","Finds all Action Objects in the Block that have the given Role name and Class ID.")
+			$obmember("M",	"FindActionObjectsByRoleRecursive(..)","Same as previous, except searches in all contained Blocks as well.")
+	$obtableEnd()
+
+$section1(2,"Dataset object enumeration and searching")
+
+	<p class='tightTop'>
+		See application note $anref('105', 'Datasets') for more information.
+	</p>
+
+	$obtableBegin()
+		$obsubhead("Enumeration")
+			$obmember("P","DatasetObjects","List of identifiers of Action Objects in the Block.")
+			$obmember("M","GetDatasetObjects(..)","Returns list of Dataset Objects in the Block")
+			$obmember("M","GetDatasetObjectsRecursive()","Returns list of Dataset Objects in the Block and all the Blocks it contains, down to the lowest nesting level.")
+		$obsubhead("Searching")
+			$obmember("M","FindDatasetObjectsByRole()","Finds all Dataset Objects in the Block that have the given name and/or MIME type.")
+			$obmember("M","FindDatasetsRecursive","Same as previous, except searches in all contained Blocks as well.")
+	$obtableEnd()
+
+$section1(2,"Configurability options")
+
+	<p class='tightTop'>
+		See Configurable Blocks below.
+	</p>
+
+	$obtableBegin()
+		$obmember("P","Configurability","Bitstring specifying the Block's configurability at run time.<br />			Bit 0: 1 if Action Objects can be created/deleted.<br />			Bit 1: 1 if Signal Paths can be created/deleted.<br />			Bit 2: 1 if Dataset Objects can be created/deleted.")
+	$obtableEnd()
+
+$section1(2,"Action object creation and deletion")
+
+	<p class='tightTop'>
+		See Configurable Blocks below.
+	</p>
+
+	$obtableBegin()
+		$obmember("M","ConstructActionObject(..)","Adds a new Action Object to the Block")
+		$obmember("M","DeleteMember(..)","Deletes an Action Object or a Database Object from the Block")
+	$obtableEnd()
+
+$section1(2,"Dataset object creation and deletion")
+
+	<p class='tightTop'>
+		See application note $anref('105','Datasets') for details.
+	</p>
+
+	$obtableBegin()
+		$obmember("M","ConstructDataset(..)","Adds a new Dataset Object to the Block")
+		$obmember("M","DuplicateDataset(..)","Creates a copy of a Dataset Object in the Block, and adds this copy to the Block")
+		$obmember("M","DeleteMember(..)","Deletes an Action Object or a Database Object from the Block")
+	$obtableEnd()
+
+$section1(2,"Signal Flow Control")
+
+	<p class='tightTop'>
+		See Signal Flow Control below.
+	</p>
+
+	$obtableBegin()
+			$obmember("P","SignalPaths","Collection of Signal Paths between Action Objects in the Block")
+			$obmember("M","GetSignalPaths(..)","Returns list of all Signal Paths in the Block")
+			$obmember("M","GetSignalPathsRecursive(..)","Returns list of Signal Paths in the Block and all the Blocks it contains, down to the lowest nesting level.")
+			$obmember("M","AddSignalPath(..)","Adds a new Signal Path to the Block.")
+			$obmember("M","DeleteSignalPath(..)","Deletes a Signal Path from the Block.")
+	$obtableEnd()
+
+$section1(2,"Hierarchical object naming (the Rolepath feature)")
+
+	<p class='tightTop'>
+		See application note $anref('100', 'Designing an AES70 Device') for more information about this feature.
+	</p>
+
+	$obtableBegin()
+			$obmember("M","FindActionObjectsByRolePath(..)","Finds Action Objects with the given Rolepath")
+	$obtableEnd()
+	
+<p>The following property and method are inherited from $code("OcaRoot"), the AES70 base class:</p>
+
+	$obtableBegin()
+			$obmember("P","Role","The object's Role.  For the $code('OcaBlock') object, the value is the Role of the Block itself.")
+			$obmember("M","GetRole(..)","Returns the value of the $code('Role') property.")
+	$obtableEnd()
+
+$section1(2,"Stored parameter support")
+
+	<p class='tightTop'>
+		"Stored parameter support" refers to what is sometimes called "preset", "scene", or "cue" support: 
+		the ability to save sets of parameter values inside a device for quick recall when needed.
+		See application note $anref('112', 'Stored Parameters') for a full description of the AES70 stored parameter feature.  Also see application note $anref('105', 'Datasets') for details on Datasets.
+	</p>
+
+	$obtableBegin()
+		$obmember("P","MostRecentParamDatasetONo","Object number of the parameter Dataset that was most recently applied to this Block.")
+		$obmember("M","GetMostRecentParamDatasetONo(..)","Returns the value of property MostRecentParamDatasetONo.")
+		$obmember("M","ApplyParamDataset(..)","Applies the specified parameter Dataset to this Block.")
+		$obmember("M","StoreCurrentParameterData(...)","Stores the values of all the properties of all the objects in the Block into a given Dataset.")
+		$obmember("M","FetchCurrentParameterData(..)","Returns the values of all the properties of all the objects in the Block in a single binary data element with an application-specific format.")
+	$obtableEnd()
+
+$section1(2,"Reusable Block support")
+
+	<p class='tightTop'>
+		See Reusable Blocks below for more detail.
+	</p>
+
+	$obtableBegin()
+			$obmember("P","GlobalType","The Block's Global Type identifier, a globally unique value that uniquely identifies this Block's configuration.")
+			$obmember("M","GetGlobalType","Returns the value of property GlobalType.")
+	$obtableEnd()
+
+$section1(2,"Automated Block creation")
+
+	<p class='tightTop'>
+		See Block Factories below for more detail.
+	</p>
+
+	$obtableBegin()
+			$obmember("P","BlockFactoryONo","Object number of Block Factory object that created this Block, or zero if the Block wasn't created by a Block Factory.")
+			$obmember("M","GetBlockFactoryONo(..)","Returns the value of property MostRecentParamDatasetONo.")
+			$obmember("M","ConstructBlockUsingFactory(..)","Using the designated Block Factory object, constructs a new Block, with all its contained objects, and adds it to the current Block.")
+	$obtableEnd()
+
+	$section(1,"Configurable Blocks")
+
+	<p>
+		Certain DSP-based signal processing devices allow controllers to create and delete Blocks 
+		and objects within them at run time.
+		To support this, AES70 defines three kinds of Block configurability:
+	</p>
+
+	<ol>
+		<li>	Controllers may create and delete Action Objects.</li>
+		<li>	Controllers may create, update, and change Signal Paths.</li>
+		<li>	Controllers may create and delete Dataset Objects.</li>
+	</ol>
+
+	<p>
+		A Block's configurability is indicated by the value of the property $code('OcaBlock.Configurability')>.
+		This property is a set of three bit flags:
+	</p>
+
+	<ul class='nosp'>
+		<li>	Bit 0: 	1 if Action Objects can be created/deleted.</li>
+		<li>	Bit 1: 	1 if Signal Paths can be created/deleted.</li>
+		<li>	Bit 2: 	1 if Dataset Objects can be created/deleted.</li>
+	</ul>
+
+	<p>
+		The value of $code('Configurability') determines which object population management methods the Block supports.  
+		For example:
+	</p>
+
+	<ul>
+		<li>
+			If bit 0 is zero, then the $code('OcaBlock') methods $code('ConstructActionObject(..)') 
+			and $code('ConstructActionObjectUsingFactory(..)') 
+			will return a NotImplemented status if called.  
+		</li>
+
+		<li>
+			If bit 2 is zero, then the methods $code('ConstructDataset(..)') and $code('DuplicateDataset(..)') 	
+			will return a NotImplemented status if called.
+		</li>
+
+		<li>
+			If both bit 0 and bit 2 are zero, then the method $code('DeleteMember(..)') 
+			will return a NotImplemented status if called.
+		</li>
+	</ul>
+
+	<p>
+		Configurability is not inherited by contained Blocks.  
+		For example, a Block that allows creation and deletion of Action Objects may contain 
+		nonconfigurable Blocks, and vice versa.
+	</p>
+
+$sectionpage(1,"Signal Flow Control")
+
+	<p>
+		The AES70 Signal Flow Control feature allows Controllers to discover and, in some cases, modify signal flows among processing elements inside a Block and among Blocks.
+	</p>
+
+$section(2,"Ports")
+
+	<p>
+		For defining Signal Flows, Action Objects with signal processing functions can have Ports. 
+		A Port is a software element that describes an input or output signal of the processing function 
+		an Action Object controls. 
+		<i><b>Input Ports</b></i> represent signal flows into the processing function; 
+		<i><b>Output Ports</b></i> represent signal flows out of the processing function. 
+	</p>
+	
+	<p>
+		An Action Objectcontrols or monitors a signal processing function is called a <i><b>Worker</b></i>.  
+		A Worker can have any number of Ports.  
+	</p>
+	
+	<p>
+		A Block that contains Workers is itself a Worker and can have Ports of its own, called Block Ports.  
+		Block Ports behave slightly differently from other Action Object Ports, as will be explained below.
+	</p>
+	
+$section(2,"Signal Paths")
+
+	<p>
+		A Signal Path is an internal connection from:
+	</p>
+
+	<ul class='tight'>
+		<li>A Worker's Output Port to a Worker's Input Port, or </li>
+		<li>A Block Input Port to a Worker's Input Port, or </li>
+		<li>A Worker's Output Port to a Block Output Port. </li>
+	</ul>
+
+<p>&nbsp;</p>
+
+$pic("images/signal-paths.jpg","Signal paths")
+
+	<p>
+		The illustration shows the purpose of Block Ports.  
+		A Block port is a signal portal from the inside to the outside of the Block.  
+		It is possible to define a signal path directly into a Block from the outside 
+		(see the path marked with an * in the picture), in most cases it's cleaner to use Block Ports 
+		for signals that pass between Blocks.
+	</p>
+
+$section(2,"Uses of Signal Paths")
+
+	<p>
+		Signal Flow Control is an optional feature.  It will normally be useful in the following cases:
+	</p>
+
+	<ol class='tight'>
+		<li>Non-Configurable Blocks whose signal flows need to be visible to controllers, perhaps for display purposes.
+		<li>Blocks whose signal flows can be configured by controllers at run time.
+		<li>Blocks that allow creation and deletion of Action Objects at run time.
+	</ol>
+
+	<p>
+		In case (1), the Block's signal flow property $code('OcaBlock.SignalFlow') will be read-only.  
+		In cases (2) and (3), it will be read-write.
+	</p>
+
+$section(2,"Clocking")
+
+	<p>
+		When a device has multiple internal sample clocks, a controllers might need to manage the allocation of clocks to Ports.  
+		The AES70 datatype $code('OcaPort'), which defines the Port descriptor, 
+		supports this by storing the Object Number of the associated $code('OcaMediaClock3') object.  
+		See application note $anref('113', 'Timing and Clocks') for full details.
+	</p>
+
+$section(1,"Reusable Blocks")
+
+	<p>
+		The configuration of objects inside a Block is called a <i><b>Block Schema</b></i>, or just <i><b>Schema</b></i>.  
+	</p>
+	
+	<p>
+		If you're creating a line of AES70-controlled products, you'll probably have a number of Blocks 
+		that have the same schema in multiple products.  
+		For example, the three-band equalizer shown in the examples above might occur in various products.
+	</p>
+
+	<p>
+		To help manage the re-use of schemas, $code('OcaBlock') provides the property $code('GlobalType').
+		$code('GlobalType') uniquely identifies the schema globally.  
+		Its value is the combination of an originator's organization ID (see below) and a unique number chosen by that organization.
+	</p>
+
+	<p>
+		$code('GlobalType') has three benefits:
+	</p>
+
+	<ol class='tight'>
+		<li>
+			It allows controllers to identify standard modules (Blocks with known schemas) within a device, 
+			and to re-use code blocks already written for those modules.
+		</li>
+
+		<li>
+			It helps organize reusable schemas into both private and public libraries. 
+		</li>
+
+		<li>
+			It supports open sharing of schemas across manufacturers.
+		</li>
+	</ol>
+
+	<p>
+		The format of $code('GlobalType') is defined by the AES70 datatype $code('OcaGlobalTypeIdentifier'), 
+		and is as follows (c-style pseudocode):
+	</p>
+
+	<div class='in'>
+		<span class='code'>
+			struct OcaGlobalTypeIdentifier {<br />
+			<div class='in'>
+				<p class='nosp'>	OcaOrganizationID  Organization;</p>
+				<p class='nosp'>	OcaUint32 ID;</p>
+			</div>
+			}
+		</span>
+
+		<p>
+			where $code('Organization') is a 24-bit IEEE 
+			<a href='https://en.wikipedia.org/wiki/Organizationally_unique_identifier'>
+				OUI (Organization Unique ID)
+			</a>
+			or
+			<a href='https://standards.ieee.org/products-programs/regauth/cid/'>
+				CID (Company ID)
+			</a>
+			and $code('ID') may be freely chosen by the identified organization.
+		</p>
+
+$section(1,"Block Factories")
+	<p>
+		In some reconfigurable devices, Blocks with the same Schema may be instantiated and deleted many times while running.  
+		To avoid the need for controllers to build each such Block object-by-object, 
+		AES70 defines the $code('OcaBlockFactory') class, whose instances can create specific, fully-populated 
+		Blocks with a single call. 
+	</p>
+
+	<p>
+		A $code('OcaBlockFactory') object ("Block Factory") is configured to construct a Block with a given schema. 
+		For example, to use Block Factory $code('F1') for constructing a new Block inside a parent Block $code('B1'), 
+		a controller calls $code('B1')'s method $code('ConstructBlockUsingFactory(..)'), 
+		identifying $code('F1') as the factory to use.  
+		The result is a new Block $code('B2') inside $code('B1'), completely populated according to the given schema.
+	</p>
+
+	<p>
+		In operation, a Block Factory a set of <i><b>prototypes</b></i> that represent the members and signal paths
+		of the Block to be created.  
+		When a controller instigates creation of the block, the prototypes are used as templates to create the actual population.
+	</p>
+
+	<p>
+		Block Factories may be defined at time of device manufacture or, if implementation permits, by controllers at runtime.
+		For the latter case, $code("OcaBlockFactory") contains a complete set of methods that allow controllers 
+		to define the Factory's prototypes as desired.
+	</p>
+
+	<p>
+		For details, see the standards documents AES70-1, "Block Factories" section, 
+		and the formal class definition in AES70-2 Annex A.
+	</p>
+
+$sectionpage(1,"References")
+
+$section(2,"AES70 standards")
+
+	<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+
+	$standards()
+
+	<p> Copies of these standards are available from the AES Standards Store, 
+		<a href='https://aes2.org/publications/standards-store/'>
+			aes2.org/publications/standards-store.
+		</a>
+	</p>
+
+	<p>
+		AES standards documents are free to AES members.  You're encouraged to join!
+	</p>
+$bottom('2026')

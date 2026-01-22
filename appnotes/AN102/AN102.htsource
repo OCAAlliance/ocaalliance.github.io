@@ -1,0 +1,105 @@
+$top("AN102"," AES70 Control Grouping ","2026.01.15","Jeff Berryman"," veezeronline@gmail.com")
+
+$payload()
+
+$tocbegin(1)
+$tocitem(1,"Introduction")
+$tocitem(1,"The OcaGroup Class")
+$tocitem(2,"Control Groups and OcaBlocks")
+$tocitem(2,"Definitions")
+$tocitem(1,"References")
+$tocitem(2,"AES Standards")
+$tocend()
+
+$content()
+
+		$section(1,"Introduction")
+		<p>
+			This application note describes AES70"s scheme for control grouping - 
+			using one control to affect multiple parameters, as in 
+			mastering, submastering, and so on.
+		</p>
+		
+		$section(1,"The OcaGroup Class")
+		<p>
+			The new class $code("OcaGroup") in AES70-2024 gives developers an easy to use way of 
+			defining control groups for master and submaster gain and EQ controls, 
+			mute groups, solo functions, and other interesting functions 
+			involving multiple control objects.   
+			It replaces an older class $code("OcaGrouper"), which was more difficult to use.
+		</p>
+		
+		<p>
+			An $code("OcaGroup") control group is a list of objects ("members"). 
+			Changes to the group"s settings affect the settings of all its members.  
+			The exact relationship between group settings and member settings 
+			depends on a rule called the <i><b>Aggregation Rule</b></i> and will vary, 
+			depending on what kinds of objects are grouped.
+		</p>
+		
+		<ul>
+			<li>
+				<span class="inlinehdr">Example 1 - Master mute.</span>  
+				Group members are $code("OcaMute") objects.  
+				Muting the group mutes all the individual objects, 
+				unmuting the group unmutes all the individual objects.
+			</li>
+			<li>
+				<span class="inlinehdr">Example 2 - Virtual VCA master. </span>
+				Group members are $code("OcaGain") objects.  
+				The group gain setting is added to the individual gain settings.
+			</li>
+		</ul>
+		
+		$section(2,"Control Groups and OcaBlocks")
+		
+		<p>
+			Many devices use $code("OcaBlock") objects to organize their control structures  - 
+			see application notes 
+			<a href="../AN100/index.html">
+				AN100:Designing an AES70 Device
+			</a>for an overview of this technique, and
+			<a href="..\AN101\index.html">
+				AN101: OcaBlock Deep Dive
+			</a>
+			for more details on $code("OcaBlock").  
+		</p>
+		<p>
+			It"s important to realize that $code("OcaGroup") control group membership is 
+			independent of a device"s block structure.
+			The members of a given control group can belong to various blocks.
+			If you"re familiar with conventional mixing console architecture, 
+			you can think of AES70 control groups as functionally equivalent to VCA masters.
+		</p>
+		
+		<p>
+			Here"s a multichannel mixer example showing these relationships.
+		</p>
+
+		$pic("images/mixer control group.jpg","Example AES70 control group")
+		
+		$section(2,"Definitions")
+		
+		<p>
+			The official description of AES70 control groups is in the AES70-1 standard, 
+			and the normative definition of the $code("OcaGroup") class is in the AES70 class definitions 
+			in AES70-2, Annex A.
+		</p>
+		
+		$sectionpage(1,"References")
+		$section(2,"AES70 standards")
+			<p>The following Audio Engineering Society standards define the AES70 Suite:</p>
+			
+			$standards()
+			
+			<p> Copies of these standards are available from the AES Standards Store, 
+				<a href="https://aes2.org/publications/standards-store/">
+					aes2.org/publications/standards-store.
+				</a>
+			</p>
+			
+			<p>
+				AES standards documents are free to AES members.  You"re encouraged to join!
+			</p>
+			
+$bottom("copyright year")

@@ -27,13 +27,13 @@ body {
 
 h1,h2,h3 {
 		font-family: Trebuchet MS;
-		color:#000080;
+		color:#235767;
 		page-break-after: avoid;
 		font-weight: normal;
 }	
 
 a:link, a:visited {
-	color:#0000C0;
+	color:#8000C0;
 	text-decoration:none;
 }
 h1 {
@@ -90,24 +90,21 @@ div.main {
 /* ================== */
 
 .tocarea {
-	width:80%;
-	margin:auto;
 	padding-top:12pt;
 	padding-bottom:12pt;	
-	border: 1px solid #000000;
+	border-bottom: 1px solid #FF0000;
 }
 
 .toctitle {
 	font-size:14pt;
 	font-family:Trebuchet MS;
 	color:#202020;
-	text-align:center;
+	text-align:left;
 	margin-top:0;
 	margin-bottom:12pt;
 }
 
 .tocitems {
-	column-count:3;
 	column-rule: 1px solid #ff0000;
 }
 
@@ -128,22 +125,47 @@ div.main {
 th {
 	text-align: left;
 	color: 0;
-	font-weight: 350;
+	background-color:#E2EFD9;
+	font-weight: 800;
+	font-family:Trebuchet MS;
+	font-size:10pt;
+	border: 1px double #000000;
 }
 
 td, th{
-	min-width: 120px;
 	padding: 8px 10px;
 }
 
 table.tight {
 	line-height:1.2em;
+	border-collapse:collapse;
+	min-width:0;
 }
 
 td.auth {
 	padding-top:0;
 	padding-bottom: 10px;
 	font-family: Trebuchet MS;
+}
+
+td.tightul {
+	margin-top:0;
+	margin-bottom:0;
+	padding-left:6pt;
+	padding-top: 3px;
+	padding-bottom:3px;
+	border: 1px solid #A0A0A0;
+	font-size:10pt;
+}
+
+td.subhead {
+	margin-top:6px;
+	margin-bottom:6px;
+	font-weight:600;
+	border: 1px solid #404040;
+	font-family:Trebuchet MS;
+	font-size:10pt;
+	background-color:#FFFFCC;
 }
 
 /* ================== */
@@ -173,11 +195,22 @@ td.auth {
 table.nosp {
 	border-collapse:collapse;
 }
+
 .nosp {
 	margin-bottom:0;
 	margin-top:0;
 	padding-top:0; 
 	padding-bottom:0;
+}
+
+.nospBelow {
+	margin-bottom:0;
+	padding-bottom:0;
+}
+
+.tightTop {
+	padding-top:3px;
+	margin-top:0;
 }
 
 .tdTightTop {
@@ -206,9 +239,9 @@ table.nosp {
 	margin-top:0;
 	margin-bottom: 0;
 	font-family:Rockwell BQ,Rockwell,Comic sans MS;
-	font-size: 10.75pt;
+	font-size:0.9em;
 	color:#0000A0;
-	line-height: 1em;
+	line-height: 1.3em;
 }
 
 .in {
@@ -234,9 +267,9 @@ img {
 }
 
 .inlinehdr {
-	font-family: Trebuchet MS;
-	font-weight:900;
-	color:#000060;
+	font-weight:600;
+	color:#000000;
+	background-color:#eeeeee;
 }
 
 .caption {
