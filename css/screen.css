@@ -1,5 +1,3 @@
-/* Format2025 version, derived from Copper Leaf 2024.09.24 version */   
-
 body {
     font-family: "Encode Sans", Sans-serif;
     color: #404040;
@@ -150,8 +148,8 @@ div {
 
 .topnav a {
 	text-decoration: none;
-  color: #707070;
-  font-size: 18px;
+  color: #000000;
+  font-size: 12pt;
   font-weight: 400;
 }
 
