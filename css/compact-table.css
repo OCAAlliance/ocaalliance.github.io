@@ -18,9 +18,15 @@
     text-align: left;
     padding: 5px 8px; 
     border-bottom: 1px solid #e9ecef;
+		min-width:0;
 }
 
 /* Optional: remove the bottom border on the last row for a cleaner look */
+
 .table-compact tbody tr:last-of-type td {
     border-bottom: none;
+}
+
+.table-compact col {
+	min-width:0;
 }

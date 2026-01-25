@@ -29,12 +29,13 @@
 			.table-compact td {
 					text-align: left;
 					padding: 0; 
+					min-width:0;
 			}
 
-			/* Optional: remove the bottom border on the last row for a cleaner look 
-			.table-compact tbody tr:last-of-type td {
-					border-bottom: none;
-			} */
+			.date {
+				color:#2A677A;
+				text-align:center;
+			}
 		</style>		
 	
   </head>
@@ -76,23 +77,25 @@
 			</p>
 
 			<table class='table-compact'>
-				<col width='90%'>
-				<col width='10%'>
 				<col>
-				
+				<col width='64pt'>
+				<col width='64pt'>
+
 				<tr>
-					<td>&nbsp;</td>
-					<td style='text-align:right;'><b><u>PDF</u></b></td>
+					<td >&nbsp;</td>
+					<td  style='text-align:center;'><b><u>Date</u></b></td>
+					<td  style='text-align:right;'><b><u>PDF</u></b></td>
 				</tr>
 				
 				<!-- AN100 Designing an AES70 Device (3 parts)------------------------------------------->
 				
 				<tr>
-					<td class='nosp'>
+					<td  class='nosp'>
 						<a target=_blank href='appnotes/AN100/Index.html'>
 							<h3 class='nosp'>AN100: Designing an AES70 Device</h3>
 						</a> 
 					</td>
+					<td class='date'>2026.01.08</td>
 					<td style='text-align:right;'>
 						<a rel=noopener target=_blank href='appnotes/AN100/AN100 - Designing an AES70 Device.pdf'>
 							<img src='images/DownloadSmall.png' height='16px' width='16px'>
@@ -101,7 +104,7 @@
 					</td>
 				</tr>	
 				<tr style='border-bottom: 1px solid #808080;'>
-					<td colspan=2 style='border:bottom 1px solid #000000;'>
+					<td  colspan=3 style='border:bottom 1px solid #000000;'>
 						<p style='margin-top:0;'>An approach for selecting and configuring the objects for new AES70 Devices.</p>
 					</td>
 				</tr>
@@ -109,11 +112,12 @@
 				<!-- AN101 AES70 Blocks ------------------------------------------------->
 				
 				<tr>
-					<td>
+					<td >
 						<a target=_blank href='appnotes/AN101/index.html'>
 							<h3 class='nosp'>AN101: AES70 Blocks</h3>
 						</a>
 					</td>
+					<td class='date'>2026.01.21</td>
 					<td style='text-align:right'>
 						<a rel=noopener target=_blank href='appnotes/AN101/AN101 - AES70 Blocks.pdf'>
 							<img src='images/DownloadSmall.png' height='16px' width='16px'>
@@ -122,7 +126,7 @@
 					</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #808080;'>
-					<td colspan=2 style='border:bottom 1px solid #000000;'>
+					<td  colspan=3 style='border:bottom 1px solid #000000;'>
 						<p style='margin-top:0;'>
 							Details of <b>OcaBlock</b>, the key AES70 class for organizing objects,
 							and its companion class <b>OcaBlockFactory</b>.
@@ -133,12 +137,13 @@
 			<!-- AN102 Control Grouping ------------------------------------------->
 			
 				<tr>
-					<td>
+					<td >
 						<a target=_blank href='appnotes/AN102/index.html'>
 							<h3 class='nosp'>AN102: AES70 Control Grouping</h3>
 						</a>
 					</td>
-					<td style='text-align:right'>
+					<<td class='date'>2026.01.15</td>
+					<td  style='text-align:right'>
 						<a rel=noopener target=_blank href='appnotes/AN102/AES70 Control Grouping.pdf'>
 							<img src='images/DownloadSmall.png' height='16px' width='16px'>
 						</a>
@@ -146,13 +151,16 @@
 					</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #808080;'>
-					<td colspan=2 style='border:bottom 1px solid #000000;'>
-						<p style='margin-top:0;'>Using one control to affect multiple parameters, as in mastering, submastering, and so on. </p>
+					<td  colspan=3 style='border:bottom 1px solid #000000;'>
+						<p style='margin-top:0;'>
+							Using one control to affect multiple parameters, 
+							as in mastering, submastering, and so on. 
+						</p>
 					</td>
 				</tr>
 				
 				<tr style='border-bottom: 1px solid #808080;'>
-					<td colspan=2 style='color:#FF0000; border:bottom 1px solid #000000;'>
+					<td  colspan=3 style='color:#FF0000; border:bottom 1px solid #000000;'>
 						<p> 
 							More coming!
 						</p>
